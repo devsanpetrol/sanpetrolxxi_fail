@@ -17,7 +17,7 @@
                         "articulo" => articulo_detail($valor['id_pedido'],$valor['articulo'], $valor['categoria'], ucwords(mb_strtolower($valor['nombre_aprueba'])), $valor['cargo_aprueba'],$valor['cod_articulo'],ucwords(mb_strtolower($valor['nombre_solicita']))),
                         "cantidad_solicitud" => cantidad_solicitado($valor['cantidad_solicitud'], $valor['unidad']),
                         "cantidad_apartado" => cantidad_apartado($valor['cantidad_apartado'],$valor['unidad']),
-                        "cantidad_surtir" => cantidad_surtir($valor['id_pedido'],$valor['cantidad_apartado']),
+                        "cantidad_surtir" => cantidad_surtir($valor['id_pedido'],$valor['cod_articulo'],$valor['cantidad_apartado']),
                         "cantidad_entregado" => cantidad_entregada($valor['cantidad_entregado'],$valor['unidad']),
                         "cantidad_compra" => cantidad_apartado($valor['cantidad_compra'],$valor['unidad']),
                         "destino" => destino($valor['id_pedido'],$valor['destino_detail'],$valor['tipo_destino']),
@@ -43,8 +43,8 @@
     function cantidad_solicitado($cantidad, $unidad){
         return "<h6 class='mb-0 font-weight-bold'>$cantidad </h6><h6 class='mb-0 font-weight-bold text-slate-300 font-size-sm'>$unidad</h6>";
     }
-    function cantidad_surtir($id_pedido, $max){
-        return "<input id='number_$id_pedido' type='number' value='0' max='$max' min='0' class='form-control form-control-lg text-danger font-weight-bold text-center' style='padding-bottom: 5px;'>
+    function cantidad_surtir($id_pedido, $cod_articulo, $max){
+        return "<input id='number_$id_pedido' data-idpedido='$id_pedido' data-apartado='$max' data-codarticulo='$cod_articulo' type='number' value='0' max='$max' min='0' class='form-control form-control-lg text-danger font-weight-bold text-center input-surtido-genera' style='padding-bottom: 5px;'>
                 <div class='progress mb-3' style='height: 0.375rem;'>
                     <div class='progress-bar progress-bar-striped progress-bar-animated' id='progress_$id_pedido' style='width: 0%'>
                     </div>

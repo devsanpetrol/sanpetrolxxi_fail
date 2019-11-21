@@ -204,4 +204,11 @@ class suministro extends conect
         $resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
         return $resultado;
     }
+    public function set_update_salida($id_pedido,$cod_articulo, $cantidad_apartado, $cantidad_entregado){
+        $sql1 = $this->_db->prepare("UPDATE adm_pedido SET adm_pedido.cantidad_apartado = '$cantidad_apartado', adm_pedido.cantidad_entregado = '$cantidad_entregado' WHERE adm_pedido.id_pedido = $id_pedido LIMIT 1");
+        $sql2 = $this->_db->prepare("UPDATE adm_almacen SET adm_almacen.stock = (adm_almacen.stock - $cantidad_entregado) WHERE adm_almacen.cod_articulo = '$cod_articulo' LIMIT 1");
+        $resultado1 = $sql1->execute();
+        $resultado2 = $sql2->execute();
+        return $resultado1;
+    }
 }

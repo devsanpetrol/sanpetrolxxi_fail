@@ -72,8 +72,6 @@ $(document).ready( function () {
             info: "Mostrando _START_ hasta _END_ de _TOTAL_ registros"
         }
     });
-    
-    
         
     $('#datatable_almacen_salida thead th').each( function () {
          var title = $(this).text();
@@ -171,7 +169,6 @@ function agrega_pase(id_pedido){
                 var max = parseInt($("#number_"+id_pedido).attr("max"));
                 var val = parseInt($("#number_"+id_pedido).val());
                 if(val <= max ){
-                    console.log(val+"-"+max);
                     var por = (val*100)/max;
                     if(por >= 100){
                         $("#progress_"+id_pedido).removeClass("progress-bar-animated").addClass("bg-success");
@@ -180,11 +177,18 @@ function agrega_pase(id_pedido){
                     }
                     $("#progress_"+id_pedido).css("width",por+"%");
                 }else{
-                    alert("El valor ingresado no es valido conforme a la solicitud");
-                    $("#number_"+id_pedido).val(0);
+                    if (!isNaN(val) ){
+                        alert("El valor ingresado no es valido conforme a la solicitud");
+                    }
+                    $("#number_"+id_pedido).val("");
                     $("#progress_"+id_pedido).css("width","0%");
+                } 
+            });
+            $("#number_"+id_pedido).focusout(function() {
+                var val = parseInt($("#number_"+id_pedido).val());
+                if (isNaN(val) ){
+                    $("#number_"+id_pedido).val("0");
                 }
-                
             });
         })
     });
@@ -212,4 +216,16 @@ function agrega_pase(id_pedido){
     }, 500);
     
     
+ }
+ function genera_pase_salida(){
+        $(".input-surtido-genera").each(function(){
+            var id_pedido   = $(this).data('idpedido');
+            var codarticulo = $(this).data('codarticulo');
+            var apartado    = parseInt($(this).data('apartado'));
+            var surtido     = parseInt($(this).val());
+            var nuevo_apartado = apartado-surtido;
+            console.log("Valores respuestas - > ID Pedido: "+id_pedido+"; Cod Articulo: "+codarticulo+"; Apartado: "+apartado+"; Surtido: "+surtido);
+            console.log("Valores nuevos     - > ID Pedido: "+id_pedido+"; Cod Articulo: "+codarticulo+"; Apartado: "+nuevo_apartado+"; Entregado: "+surtido);
+            console.log(" ");
+        });
  }

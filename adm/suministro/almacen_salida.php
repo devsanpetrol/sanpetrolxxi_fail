@@ -67,25 +67,6 @@
 
             <!-- Content area -->
             <div class="content">
-                <!-- Bottom right menu -->
-                <ul class="fab-menu fab-menu-fixed fab-menu-bottom-right" data-fab-toggle="click" id="tools_menu_select">
-                    <li>
-                        <button type="button" class="fab-menu-btn btn btn-success btn-float rounded-round btn-icon">
-                            <i class="fab-icon-open icon-plus3"></i>
-                            <i class="fab-icon-close icon-cross2"></i>
-                        </button>
-                        <ul class="fab-menu-inner">
-                            <li>
-                                <div data-fab-label="Pase Salida">
-                                    <a class="btn btn-light rounded-round btn-icon btn-float">
-                                        <i class="icon-clipboard2"></i>
-                                    </a>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-                <!-- /bottom right menu -->
                 <!-- Invoice archive -->
                 <div class="card" data-vista="no" id="card_almacen_pase" style="display: none;">
                     <table class="table table-responsive-sm table-xs dt-responsive" id="datatable_almacen_pase" width="100%">
@@ -112,7 +93,7 @@
                     <div class="card-footer d-flex justify-content-between align-items-center">
                         <div class="text-muted" id="count_row_datatable">Added 3 hours ago</div>
                         <span>
-                            <button type="button" class="btn btn-success btn-sm"><i class="icon-clipboard5 mr-2"></i> Generar</button>
+                            <button type="button" class="btn btn-success btn-sm" onclick="genera_pase_salida()"><i class="icon-clipboard5 mr-2"></i> Generar</button>
                         </span>
                     </div>
                 </div>
