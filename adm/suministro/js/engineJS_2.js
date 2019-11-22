@@ -11,18 +11,18 @@ $(document).ready( function () {
         },
         columnDefs: [
             {targets: 0, visible: false,searchable: true},
-            {targets: 1, width: '30%'},
+            {targets: 1, width: '25%'},
             {targets: 2, visible: false,searchable: true},
             {targets: 3, visible: false,searchable: false},
             {targets: 4, visible: false,searchable: false},
-            {targets: 5, width: '30%'},
-            {targets: 6, width: '8%',className:'text-center'},
-            {targets: 7, width: '8%',className:'text-center'},
-            {targets: 8, width: '8%',className:'text-center'},
-            {targets: 9, width: '8%',className:'text-center'},
+            {targets: 5, width: '25%'},
+            {targets: 6, width: '10%',className:'text-center'},
+            {targets: 7, width: '10%',className:'text-center'},
+            {targets: 8, width: '10%',className:'text-center'},
+            {targets: 9, width: '10%',className:'text-center'},
             {targets: 10,visible: false,searchable: false},
             {targets: 11,visible: false,searchable: false},
-            {targets: 12,width: '8%',className:'text-center'}
+            {targets: 12,width: '10%',className:'text-center'}
         ],
         language: {
             info: "Mostrando _TOTAL_ registros"
@@ -214,8 +214,6 @@ function agrega_pase(id_pedido){
         var filas = tabla.rows().count();
         $("#count_row_datatable").text("Numero de registros: "+filas);
     }, 500);
-    
-    
  }
  function genera_pase_salida(){
         $(".input-surtido-genera").each(function(){
