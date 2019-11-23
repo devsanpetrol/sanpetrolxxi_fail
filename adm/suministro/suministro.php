@@ -134,7 +134,7 @@ class suministro extends conect
     }
     public function get_partida($id_pedido){
         $sql = $this->_db->prepare("SELECT * FROM adm_view_pedido_detail
-                                    WHERE adm_view_pedido_detail = $id_pedido");
+                                    WHERE adm_view_pedido_detail.id_pedido = $id_pedido LIMIT 1");
         $sql->execute();
         $resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
         return $resultado;
@@ -157,8 +157,13 @@ class suministro extends conect
         $resultado = $sql1->execute();
         return $resultado;
     }
-    public function set_update_cantidad($id_pedido,$cantidad){
-        $sql1 = $this->_db->prepare("UPDATE adm_pedido SET adm_pedido.cantidad = '$cantidad' WHERE adm_pedido.id_pedido = $id_pedido LIMIT 1");
+    public function set_update_cantidad($id_pedido,$cantidad,$cantidad_apartado,$cantidad_compra){
+        $sql1 = $this->_db->prepare("UPDATE adm_pedido SET adm_pedido.cantidad = '$cantidad', adm_pedido.cantidad_apartado = '$cantidad_apartado', adm_pedido.cantidad_compra = '$cantidad_compra' WHERE adm_pedido.id_pedido = $id_pedido LIMIT 1");
+        $resultado = $sql1->execute();
+        return $resultado;
+    }
+    public function out_update_almacen($cantidad,$cod_articulo){
+        $sql1 = $this->_db->prepare("UPDATE adm_pedido SET adm_pedido.cantidad = '$cantidad', adm_pedido.cantidad_apartado = '$cantidad_apartado', adm_pedido.cantidad_compra = '$cantidad_compra' WHERE adm_pedido.id_pedido = $id_pedido LIMIT 1");
         $resultado = $sql1->execute();
         return $resultado;
     }
@@ -210,5 +215,17 @@ class suministro extends conect
         $resultado1 = $sql1->execute();
         $resultado2 = $sql2->execute();
         return $resultado1;
+    }
+    public function set_vale_salida($folio_vale,$fecha_salida,$encargado_almacen,$visto_bueno,$recibe_vale,$observacion){
+        $sql = $this->_db->prepare("INSERT INTO adm_almacen_valesalida (folio_vale,fecha_salida,encargado_almacen,visto_bueno,recibe_vale,observacion)
+                                    VALUES ('$folio_vale','$fecha_salida','$encargado_almacen','$visto_bueno','$recibe_vale','$observacion')");
+        $resultado = $sql->execute();
+        return $resultado;
+    }
+    public function set_vale_salida_detail($folio_vale,$cantidad_surtida,$id_pedido){
+        $sql = $this->_db->prepare("INSERT INTO adm_almacen_valesalida (adm_almacen_valesalida_id_valesalida,cantidad_surtida,adm_pedido_id_pedido)
+                                    VALUES ('$folio_vale','$cantidad_surtida','$id_pedido')");
+        $resultado = $sql->execute();
+        return $resultado;
     }
 }

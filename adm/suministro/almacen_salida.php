@@ -91,7 +91,10 @@
                         </tbody>
                     </table>
                     <div class="card-footer d-flex justify-content-between align-items-center">
-                        <div class="text-muted" id="count_row_datatable">Added 3 hours ago</div>
+                        
+                            <label class="font-weight-bold">Justificación de compra</label><label style="color: red;"> *</label>
+                            <input type="text" class="form-control form-control-sm font-weight-semibold text-blue-800" id="justificacion" required="true" onkeyup="mayus(this);">
+                        
                         <span>
                             <button type="button" class="btn btn-success btn-sm" onclick="genera_pase_salida()"><i class="icon-clipboard5 mr-2"></i> Generar</button>
                         </span>

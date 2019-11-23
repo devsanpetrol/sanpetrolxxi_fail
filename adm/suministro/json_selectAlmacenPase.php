@@ -7,7 +7,6 @@
     $data = array();
     
     foreach ($categorias as $valor) {
-        
         $data[] = array("fecha_solicitud" => fecha($valor['folio'],date('d M h:i a', strtotime($valor['fecha_solicitud'])),date('d M', strtotime($valor['fecha_requerimiento'])),$valor['id_pedido']),
                         "grado_requerimiento" => grado($valor['grado_requerimiento'],date('d F, h:i a', strtotime($valor['fecha_solicitud']))),
                         "folio" => $valor['folio'],

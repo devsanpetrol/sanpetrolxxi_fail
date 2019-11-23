@@ -967,7 +967,7 @@ function obj_pedido(objeto){
     }
     $("#folio-"+objeto.folio).slideDown();
 }
-function save_cantidad(id_pedido,unidad){
+function save_cantidad(id_pedido){
     var notice = new PNotify();
     var cantidad = $("#cantidad_"+id_pedido).val();
     $.ajax({

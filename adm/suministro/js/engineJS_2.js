@@ -222,8 +222,5 @@ function agrega_pase(id_pedido){
             var apartado    = parseInt($(this).data('apartado'));
             var surtido     = parseInt($(this).val());
             var nuevo_apartado = apartado-surtido;
-            console.log("Valores respuestas - > ID Pedido: "+id_pedido+"; Cod Articulo: "+codarticulo+"; Apartado: "+apartado+"; Surtido: "+surtido);
-            console.log("Valores nuevos     - > ID Pedido: "+id_pedido+"; Cod Articulo: "+codarticulo+"; Apartado: "+nuevo_apartado+"; Entregado: "+surtido);
-            console.log(" ");
         });
  }

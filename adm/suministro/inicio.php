@@ -62,6 +62,11 @@
     <script src="../../global_assets/js/demo_pages/form_select2.js"></script>
     <script src="../../global_assets/js/plugins/notifications/pnotify.min.js"></script>
     <script src="../../global_assets/js/demo_pages/extra_fab.js"></script>
+    <!-- Theme JS files -->
+    <script src="../../global_assets/js/plugins/forms/styling/uniform.min.js"></script>
+    <script src="../../global_assets/js/plugins/forms/styling/switchery.min.js"></script>
+    <script src="../../global_assets/js/plugins/forms/styling/switch.min.js"></script>
+    <script src="../../global_assets/js/demo_pages/form_checkboxes_radios.js"></script>
     <!-- /theme JS files -->
 </head>
 <body>
@@ -86,13 +91,6 @@
                         <i class="fab-icon-close icon-cross2"></i>
                     </button>
                     <ul class="fab-menu-inner">
-                        <li>
-                            <div data-fab-label="Pase Salida">
-                                <a class="btn btn-light rounded-round btn-icon btn-float" onclick="modal_pase()">
-                                    <i class="icon-clipboard2"></i>
-                                </a>
-                            </div>
-                        </li>
                         <li>
                             <div data-fab-label="Regresar">
                                 <a class="btn btn-light rounded-round btn-icon btn-float" data-btn_list="" data-idrow="" id="tools_menu_regresa" onclick="regresar_lista()">
@@ -279,6 +277,13 @@
                                 </div>
                               </div>
                               <div class="col-sm-4 form-group form-group-feedback-right">
+                                <label class="d-block font-weight-bold">Grado de Requerimiento de la compra</label>
+                                <div class="form-check form-check-switchery form-check-inline form-check-right">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input-switchery" checked data-fouc>
+                                        Autorizar
+                                    </label>
+                                </div>
                               </div>
                               <div class="col-sm-2 form-group form-group-feedback-right">
                                 <label class="font-weight-bold">Codigo</label>
@@ -339,6 +344,7 @@
                         </form>                                                    
                         </div>
                         <div class="modal-footer">
+                            
                             <button type="button" class="btn btn-outline bg-danger-300 rounded-round btn-icon ml-2 btn-sm" onclick="resetModalPedido()"><i class="icon-exit2"></i> Salir</button>
                             <button type="button" class="btn btn-outline bg-slate rounded-round btn-icon ml-2 btn-sm" onclick="agregar_pedido()"><i class="icon-download4"></i> Añadir</button>
                         </div>
