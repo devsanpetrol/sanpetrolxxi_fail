@@ -91,13 +91,25 @@
                         </tbody>
                     </table>
                     <div class="card-footer d-flex justify-content-between align-items-center">
-                        
-                            <label class="font-weight-bold">Justificación de compra</label><label style="color: red;"> *</label>
-                            <input type="text" class="form-control form-control-sm font-weight-semibold text-blue-800" id="justificacion" required="true" onkeyup="mayus(this);">
-                        
-                        <span>
-                            <button type="button" class="btn btn-success btn-sm" onclick="genera_pase_salida()"><i class="icon-clipboard5 mr-2"></i> Generar</button>
-                        </span>
+                        <div class="row w-100">
+                            <div class="col-sm-6 form-group">
+                                <div class="form-group-feedback form-group-feedback-right">
+                                    <input type="text" class="form-control" data-idempleado="" id="vale_observacion">
+                                    <div class="d-block form-text text-justify">
+                                        <span class="badge">Observación</span>
+                                    </div>
+                                    <div class="form-control-feedback">
+                                        <i class="icon-pencil3 text-muted"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4 form-group">
+                                
+                            </div>
+                            <div class="col-sm-2 form-group text-right">
+                                <button type="button" class="btn btn-success btn-sm w-100" data-aprobado="" id="btn_envia_valesalida" onclick="genera_pase_salida()"><i class="icon-clipboard5 mr-2"></i> Enviar</button>
+                            </div>
+                            </div>
                     </div>
                 </div>
                 <!-- /invoice archive -->
@@ -126,6 +138,43 @@
                 </div>
                 <!-- /invoice archive -->
             </div>
+            <!-- /large modal -->
+            <div id="mod_log_acces" class="modal fade" tabindex="-1">
+                <div class="modal-dialog modal-xs">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <!-- Login form -->
+                            <div class="text-center mb-3">
+                                <img src="../../global_assets/images/placeholders/Imagen4.jpg" class="img-fluid" width="120" height="120">
+                                <h5 class="mb-0">ALMACEN</h5>
+                                <div class="text-muted">Ingrese sus credenciales para validar y continuar la operación</div>
+                            </div>
+                            <form autocomplete="off" id="log_autentic_almacenista" data-tokenid="5">
+                                <div class="form-group form-group-feedback form-group-feedback-left">
+                                    <input type="text" class="form-control" placeholder="Usuario" name="usuario" id="usuario">
+                                    <div class="form-control-feedback">
+                                        <i class="icon-user text-muted"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-feedback form-group-feedback-left">
+                                    <input type="password" class="form-control" placeholder="Password" name="password" id="password">
+                                    <div class="form-control-feedback">
+                                        <i class="icon-key text-muted"></i>
+                                    </div>
+                                </div>
+                                <div class="alert alert-danger border-0 alert-dismissible text-center"  style="display: none;padding-right: 20px;" id="msj_alert">
+                                    <span class="font-weight-semibold">¡Acceso denegado!</span>
+                                </div>
+                                <div class="d-flex align-items-sm-end">
+                                    <button type="button" class="btn btn-primary btn-sm ml-auto" onclick="log_autentic_almacenista()">Aceptar <i class="icon-lock5 ml-2"></i></button>
+                                </div>
+                            </form>
+                            <!-- /login form -->                                              
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /large modal -->
             <!-- Footer -->
             <?php include '../bar_nav/footer_navbar.php'; ?>
             <!-- /footer -->

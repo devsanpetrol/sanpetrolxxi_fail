@@ -228,4 +228,22 @@ class suministro extends conect
         $resultado = $sql->execute();
         return $resultado;
     }
+    public function aut_encargado_almacen($usuario, $password, $tokenid){
+        $sql = $this->_db->prepare("SELECT id_empleado FROM adm_login WHERE adm_login.usuario = '$usuario' AND adm_login.pass = '$password' AND adm_login.estado = 1 LIMIT 1");
+        $sql->execute();
+        $resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
+        if(count($resultado) > 0){
+            $id_empleado = $resultado[0]["id_empleado"];
+            $sql2 = $this->_db->prepare("SELECT * FROM adm_view_responsable_depto WHERE adm_view_responsable_depto.id_empleado = '$id_empleado' AND adm_view_responsable_depto.id_departamento = '$tokenid' AND adm_view_responsable_depto.status = 1 LIMIT 1");
+            $sql2->execute();
+            $resultado2 = $sql2->fetchAll(PDO::FETCH_ASSOC);
+            if(count($resultado2) > 0){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
 }

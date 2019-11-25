@@ -216,11 +216,33 @@ function agrega_pase(id_pedido){
     }, 500);
  }
  function genera_pase_salida(){
-        $(".input-surtido-genera").each(function(){
-            var id_pedido   = $(this).data('idpedido');
-            var codarticulo = $(this).data('codarticulo');
-            var apartado    = parseInt($(this).data('apartado'));
-            var surtido     = parseInt($(this).val());
-            var nuevo_apartado = apartado-surtido;
-        });
+        var aprueba = $("#btn_envia_valesalida").data("aprueba");
+        
+        if( aprueba.length > 0){
+            $("#mod_log_acces").modal("show");
+        }else{
+            $(".input-surtido-genera").each(function(){
+                var id_pedido   = $(this).data('idpedido');
+                var codarticulo = $(this).data('codarticulo');
+                var apartado    = parseInt($(this).data('apartado'));
+                var surtido     = parseInt($(this).val());
+                var nuevo_apartado = apartado-surtido;
+            });
+        }
+ }
+ function log_autentic_almacenista(){
+     var password = $("#password").val();
+     var usuario  = $("#usuario").val();
+     var tokenid  = $("#log_autentic_almacenista").data("tokenid");
+     $.ajax({
+        url: 'json_selectAlmacenPase.php',
+        data:{password:password,usuario:usuario,tokenid:tokenid},
+        type: 'POST',
+        success:(function(res){
+            if(res.resultado == "ok"){
+                $("#btn_envia_valesalida").data("aprobado","aprobado");
+                $("#btn_envia_valesalida").attr("disabled",false);
+            }
+        })
+    });
  }
