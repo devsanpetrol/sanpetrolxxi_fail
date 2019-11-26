@@ -108,6 +108,24 @@ $(document).ready( function () {
         .draw();
     } );
     
+    $('#usuario').select();
+    $("#usuario").keydown(function(){
+            $('#msj_alert').hide();
+            $('#password').val('');
+    });
+    $("#password").keydown(function(){
+            $('#msj_alert').hide();
+    });
+    $("#usuario").on('keyup', function (e) {
+        if (e.keyCode === 13) {
+           $('#password').focus();
+        }
+    });
+    $("#password").on('keyup', function (e) {
+        if (e.keyCode === 13) {
+            log_autentic_almacenista();
+        }
+    });
 } );
 
 function filter_folio(e){
@@ -161,6 +179,7 @@ function agrega_pase(id_pedido){
             
             if($("#card_almacen_pase").data("vista") == "no"){
                 setTimeout(function() {
+                    fecha_actual();
                     $("#card_almacen_pase").slideToggle();
                 }, 1000);
             }
@@ -218,7 +237,7 @@ function agrega_pase(id_pedido){
  function genera_pase_salida(){
         var aprueba = $("#btn_envia_valesalida").data("aprueba");
         
-        if( aprueba.length > 0){
+        if( aprueba == null){
             $("#mod_log_acces").modal("show");
         }else{
             $(".input-surtido-genera").each(function(){
@@ -235,14 +254,29 @@ function agrega_pase(id_pedido){
      var usuario  = $("#usuario").val();
      var tokenid  = $("#log_autentic_almacenista").data("tokenid");
      $.ajax({
-        url: 'json_selectAlmacenPase.php',
         data:{password:password,usuario:usuario,tokenid:tokenid},
+        url: 'json_aut_almacen.php',
         type: 'POST',
         success:(function(res){
-            if(res.resultado == "ok"){
+            /*if(res.resultado == "ok"){
                 $("#btn_envia_valesalida").data("aprobado","aprobado");
-                $("#btn_envia_valesalida").attr("disabled",false);
-            }
+            }else{
+                
+                $("#msj_alert").show(200);
+            }*/
+            alert(res.apellidos);
         })
     });
  }
+ function  fecha_actual(){
+    $.post('json_now.php',function(res){$('#num_folio_vale_salida').text(getFolio(res.fecha_actual));});
+}
+function getFolio(string) {
+    var tmp = string.split("");
+    var map = tmp.map(function(current) {
+      if (!isNaN(parseInt(current))) { return current; }
+    });
+    
+    var numbers = map.filter(function(value) { return value != undefined; });
+    return numbers.join("");
+}

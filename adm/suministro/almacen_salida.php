@@ -69,27 +69,35 @@
             <div class="content">
                 <!-- Invoice archive -->
                 <div class="card" data-vista="no" id="card_almacen_pase" style="display: none;">
-                    <table class="table table-responsive-sm table-xs dt-responsive" id="datatable_almacen_pase" width="100%">
-                        <thead>
-                            <tr>
-                                <th>FechaFolio</th>
-                                <th>articulo</th>
-                                <th>folio</th>
-                                <th>id_pedido</th>
-                                <th>Status</th>
-                                <th>Destino</th>
-                                <th>Cantidad</th>
-                                <th>Apartado</th>
-                                <th>Surtir</th>
-                                <th>Entregado</th>
-                                <th>Compra</th>
-                                <th>Grado</th>
-                                <th>Accion</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                    <div class="card-header bg-white header-elements-sm-inline">
+                        <h6 class="card-title"></h6>
+                        <div class="header-elements">Folio: 
+                            <span class="badge badge-danger ml-3" id="num_folio_vale_salida"></span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-responsive-sm table-xs dt-responsive" id="datatable_almacen_pase" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>FechaFolio</th>
+                                    <th>articulo</th>
+                                    <th>folio</th>
+                                    <th>id_pedido</th>
+                                    <th>Status</th>
+                                    <th>Destino</th>
+                                    <th>Cantidad</th>
+                                    <th>Apartado</th>
+                                    <th>Surtir</th>
+                                    <th>Entregado</th>
+                                    <th>Compra</th>
+                                    <th>Grado</th>
+                                    <th>Accion</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
                     <div class="card-footer d-flex justify-content-between align-items-center">
                         <div class="row w-100">
                             <div class="col-sm-6 form-group">

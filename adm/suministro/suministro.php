@@ -222,9 +222,8 @@ class suministro extends conect
         $resultado = $sql->execute();
         return $resultado;
     }
-    public function set_vale_salida_detail($folio_vale,$cantidad_surtida,$id_pedido){
-        $sql = $this->_db->prepare("INSERT INTO adm_almacen_valesalida (adm_almacen_valesalida_id_valesalida,cantidad_surtida,adm_pedido_id_pedido)
-                                    VALUES ('$folio_vale','$cantidad_surtida','$id_pedido')");
+    public function update_vale_salida_detail($folio_vale,$cantidad_surtida,$id_pedido){
+        $sql = $this->_db->prepare("UPDATE adm_pedido  SET cantidad_surtir = '$cantidad_surtida', folio_vale_salida = '$folio_vale' WHERE id_pedido = '$id_pedido'");
         $resultado = $sql->execute();
         return $resultado;
     }
@@ -238,7 +237,7 @@ class suministro extends conect
             $sql2->execute();
             $resultado2 = $sql2->fetchAll(PDO::FETCH_ASSOC);
             if(count($resultado2) > 0){
-                return true;
+                return $resultado2;
             }else{
                 return false;
             }
