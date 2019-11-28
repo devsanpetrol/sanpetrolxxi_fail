@@ -4,19 +4,20 @@
     $data = array();
     
     if(!empty($_POST['id_pedido'])){
-        $id_pedido = $_POST['id_pedido'];
-        $cod_articulo = $_POST['cod_articulo'];
-        $cantidad_apartado = $_POST['cantidad_apartado'];
-        $cantidad_entregado = $_POST['cantidad_entregado'];
+        $folio_vale        = $_POST['folio_vale'];
+        $id_pedido         = $_POST['id_pedido'];
+        $cod_articulo      = $_POST['cod_articulo'];
+        $cantidad_apartado = $_POST['cantidad_surtir'];
+        $update_almacen    = $_POST['update_almacen'];
         
-        $set_update_pedido  = $suministro->set_update_salida($id_pedido, $cod_articulo, $cantidad_apartado, $cantidad_entregado);
+        $set_update_pedido = $suministro->set_update_salida($folio_vale, $id_pedido, $cod_articulo, $cantidad_surtir, $update_almacen);
         if ($set_update_pedido == true){
-            $data[] = array("result"=>'exito',"cantidad"=>$cantidad);
+            $data[] = array("result" => 'exito',"cantidad" => $cantidad);
         }else{
-            $data[] = array("result"=>'no guardo');
+            $data[] = array("result" => 'fallo');
         }
     }else{
-            $data[] = array("result"=>'sin dato');
+            $data[] = array("result" => 'no_dato');
     }
     
     header('Content-Type: application/json');

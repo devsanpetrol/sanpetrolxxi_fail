@@ -123,7 +123,7 @@ $(document).ready( function () {
     });
     $("#password").on('keyup', function (e) {
         if (e.keyCode === 13) {
-            log_autentic_almacenista();
+            log_autentic();
         }
     });
 } );
@@ -180,11 +180,10 @@ function agrega_pase(id_pedido){
             if($("#card_almacen_pase").data("vista") == "no"){
                 setTimeout(function() {
                     fecha_actual();
-                    $("#vale_almacensitax").val("").data("idempleado","");
-                    $("#btn_envia_valesalida").prop('disabled', true);
-                    $("#vale_almacensita_check").slideUp();
+                    aplica_firma("firma_almacenista","","");
+                    aplica_firma("firma_vobo","","");
+                    $("#btn_envia_valesalida").attr("disabled",true);
                     $("#card_almacen_pase").slideToggle();
-                    $("#vale_almacensita_genera").prop('disabled', false);
                 }, 1000);
             }
             $("#card_almacen_pase").data("vista","si");
@@ -238,72 +237,59 @@ function agrega_pase(id_pedido){
         $("#count_row_datatable").text("Numero de registros: "+filas);
     }, 500);
  }
- function genera_pase_salida(){
-        var aprueba = $("#btn_envia_valesalida").data("aprueba");
-        
-        if( aprueba == null){
-            $("#mod_log_acces").modal("show");
-        }else{
-            var folio = $('#num_folio_vale_salida').text();
-            insert_vale_salida(folio);
-            $(".input-surtido-genera").each(function(){
-                var id_pedido   = $(this).data('idpedido');
-                var surtido     = parseInt($(this).val());
-            });
-        }
- }
-function log_autentic_almacenista(){
+ function log_autentic(){
+     var firma = $("#mod_log_acces").data("firmax");
      var password = $("#password").val();
      var usuario  = $("#usuario").val();
-     var tokenid  = $("#log_autentic_almacenista").data("tokenid");
+     var tokenid  = $("#"+firma).data("tokenid");
      $.ajax({
         data:{password:password,usuario:usuario,tokenid:tokenid},
         url: 'json_aut_almacen.php',
         type: 'POST',
         success:(function(res){
             if(res.result == "error_acount"){
-                $("#msj_alert").show(200);
-                $("#msj_alert").html("<span class='font-weight-semibold'>Error en los datos de la cuenta</span>");
+                $("#msj_alert").html("<span class='font-weight-semibold'>Error en los datos de la cuenta</span>").show(200);
             }else if(res.result == "acount_denied"){
-                $("#msj_alert").show(200);
-                $("#msj_alert").html("<span class='font-weight-semibold'>¡Acceso denegado!</span>");
+                $("#msj_alert").html("<span class='font-weight-semibold'>¡Acceso denegado!</span>").show(200);
             }else if(res.result == "ok"){
                 var nombrex = res.nombre+" "+res.apellidos;
-                $("#vale_almacensita_check").slideDown();
-                $("#vale_almacensitax").val(nombrex).data("idempleado",res.id_empleado);
-                $("#btn_envia_valesalida").prop('disabled', false);
-                $("#vale_almacensita_genera").prop('disabled', true);
-                $(".input-surtido-genera").each(function(){//
-                    $(this).prop('disabled', true);
-                });
-                $(".remover-item-pase").each(function(){
-                    $(this).remove();
-                });
+                aplica_firma(firma,nombrex,res.id_empleado);
+                cambiar_elementos(firma);
                 $("#mod_log_acces").modal("hide");
             }
         })
     });
  }
- function  fecha_actual(){
-    $.post('json_now.php',function(res){$('#num_folio_vale_salida').text(getFolio(res.fecha_actual));});
-}
-function getFolio(string) {
-    var tmp = string.split("");
-    var map = tmp.map(function(current) {
-      if (!isNaN(parseInt(current))) { return current; }
-    });
+
+function insert_vale_salida(){
+    var folio_vale        = $('#num_folio_vale_salida').text();
+    var encargado_almacen = $("#firma_almacensita").data("idempleado");
+    var visto_bueno       = $("#firma_vobo").data("idempleado");
+    var observacion       = $('#vale_observacion').val();
     
-    var numbers = map.filter(function(value) { return value != undefined; });
-    return numbers.join("");
-}
-function insert_vale_salida(folio_vale, encargado_almacen, observacion){
-     $.ajax({
-        data:{folio_vale:folio_vale, encargado_almacen:encargado_almacen, observacion:observacion},
+    $.ajax({
+        data:{folio_vale:folio_vale, encargado_almacen:encargado_almacen, visto_bueno:visto_bueno, observacion:observacion},
         url: 'json_insertValeSalida.php',
         type: 'POST',
         success:(function(res){
             if(res.result == "exito"){
-                
+                $(".input-surtido-genera").each(function(){
+                    var folio_vale      = res.folio_vale;
+                    var cantidad_surtir = $(this).val();
+                    var id_pedido       = $(this).data("idpedido");
+                    var cod_articulo    = $(this).data("codarticulo");
+                    var update_almacen  = ( visto_bueno != "" ) ? 'si' : 'no';
+                    
+                    $.ajax({
+                        data:{folio_vale:folio_vale, cantidad_surtir:cantidad_surtir, id_pedido:id_pedido, cod_articulo:cod_articulo, update_almacen:update_almacen},
+                        url: 'json_update_almacen_pedido.php',
+                        type: 'POST',
+                        success:(function(result){
+                            
+                        })
+                    });
+                    
+                });
             }else if(res.result == "falla_guardado"){
                 
             }else if(res.result == "falla_recepcion_dato"){
@@ -311,4 +297,43 @@ function insert_vale_salida(folio_vale, encargado_almacen, observacion){
             }
         })
     });
+ }
+ 
+ function firma_almacen(firmax){
+    $("#log_autentic_almacenista").trigger("reset");
+    $("#mod_log_acces").data("firmax",firmax);
+    $("#mod_log_acces").modal("show");
+ }
+ 
+ function aplica_firma(objeto,valor,id_empleado){
+    $("#"+objeto).val(valor).data("idempleado",id_empleado);
+    if(id_empleado == ""){
+       $("#"+objeto+"_check").slideUp();
+    }else{
+       $("#"+objeto+"_check").slideDown(); 
+    }
+ }
+ function cambiar_elementos(firma){
+    if(firma == "firma_almacenista"){
+        $("#btn_envia_valesalida").attr("disabled",false);
+    }else if(firma == "firma_vobo"){
+        $(".input-surtido-genera").each(function(){
+            $(this).attr("disabled",true);
+        });
+        $(".remover-item-pase").each(function(){
+            $(this).remove();
+        });
+    }
+ }
+ function  fecha_actual(){
+    $.post('json_now.php',function(res){$('#num_folio_vale_salida').text(getFolio(res.fecha_actual));});
+ }
+ function getFolio(string) {
+    var tmp = string.split("");
+    var map = tmp.map(function(current) {
+      if (!isNaN(parseInt(current))) { return current; }
+    });
+    
+    var numbers = map.filter(function(value) { return value != undefined; });
+    return numbers.join("");
  }

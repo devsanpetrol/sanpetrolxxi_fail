@@ -100,21 +100,35 @@
                     </div>
                     <div class="card-footer d-flex justify-content-between align-items-center">
                         <div class="row w-100">
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <div class="form-group-feedback form-group-feedback-right">
-                                    <input type="text" class="form-control" readonly value="" data-idempleado="" id="vale_almacensitax">
+                                    <input type="text" class="form-control text-pink" readonly data-idempleado="" data-tokenid="salida_almacen_01" id="firma_almacenista">
                                     <div class="d-block form-text text-justify">
                                         <span class="badge">Encargado Almacen</span>
-                                        <i class="icon-checkmark-circle text-success" id="vale_almacensita_check" style="display: none;"></i>
+                                        <i class="icon-checkmark-circle text-success" id="firma_almacenista_check" style="display: none;"></i>
                                     </div>
                                     <div class="form-control-feedback">
-                                        <button type="button" class="btn alpha-primary text-primary-800 btn-icon ml-2 legitRipple btn-sm" id="vale_almacensita_genera" onclick="genera_pase_salida()">
+                                        <button type="button" class="btn alpha-primary text-primary-800 btn-icon ml-2 legitRipple btn-sm" onclick="firma_almacen('firma_almacenista')">
                                             <i class="icon-pencil3 text-blue-800"></i>
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6 form-group">
+                            <div class="col-sm-3 form-group">
+                                <div class="form-group-feedback form-group-feedback-right">
+                                    <input type="text" class="form-control text-pink" readonly data-idempleado="" data-tokenid="salida_almacen_vobo_1" id="firma_vobo">
+                                    <div class="d-block form-text text-justify">
+                                        <span class="badge">Vo. Bo.</span>
+                                        <i class="icon-checkmark-circle text-success" id="firma_vobo_check" style="display: none;"></i>
+                                    </div>
+                                    <div class="form-control-feedback">
+                                        <button type="button" class="btn alpha-primary text-primary-800 btn-icon ml-2 legitRipple btn-sm" onclick="firma_almacen('firma_vobo')">
+                                            <i class="icon-pencil3 text-blue-800"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4 form-group">
                                 <div class="form-group-feedback form-group-feedback-right">
                                     </div>
                                     <input type="text" class="form-control" id="vale_observacion">
@@ -123,7 +137,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-2 form-group text-right">
-                                <button type="button" class="btn btn-success btn-sm" data-aprobado="" id="btn_envia_valesalida" onclick="" disabled><i class="icon-clipboard5 mr-2"></i> Enviar</button>
+                                <button type="button" class="btn btn-success btn-sm" data-aprobado="" id="btn_envia_valesalida" onclick="guardar_vale_salida_almacen()" disabled><i class="icon-clipboard5 mr-2"></i> Enviar</button>
                             </div>
                             </div>
                     </div>
@@ -155,34 +169,33 @@
                 <!-- /invoice archive -->
             </div>
             <!-- /large modal -->
-            <div id="mod_log_acces" class="modal fade" tabindex="-1">
+            <div id="mod_log_acces" class="modal fade" tabindex="-1" data-firmax="">
                 <div class="modal-dialog modal-xs">
                     <div class="modal-content">
                         <div class="modal-body">
                             <!-- Login form -->
                             <div class="text-center mb-3">
-                                <img src="../../global_assets/images/placeholders/Imagen4.jpg" class="img-fluid" width="120" height="120">
-                                <h5 class="mb-0">ALMACEN</h5>
-                                <div class="text-muted">Ingrese sus credenciales para validar y continuar la operación</div>
+                                <img src="../../global_assets/images/placeholders/Imagen4.jpg" class="img-fluid" width="120" height="50">
+                                <h5 class="mb-0">AUTENTIFICAR</h5>
                             </div>
-                            <form autocomplete="off" id="log_autentic_almacenista" data-tokenid="salida_almacen_01">
+                            <form autocomplete="off" id="log_autentic_almacenista" >
                                 <div class="form-group form-group-feedback form-group-feedback-left">
-                                    <input type="text" class="form-control" placeholder="Usuario" name="usuario" id="usuario">
+                                    <input type="text" class="form-control" autocomplete="off" placeholder="Usuario" name="usuario" id="usuario">
                                     <div class="form-control-feedback">
                                         <i class="icon-user text-muted"></i>
                                     </div>
                                 </div>
                                 <div class="form-group form-group-feedback form-group-feedback-left">
-                                    <input type="password" class="form-control" placeholder="Password" name="password" id="password">
+                                    <input type="password" class="form-control" autocomplete="off" placeholder="Password" name="password" id="password">
                                     <div class="form-control-feedback">
                                         <i class="icon-key text-muted"></i>
                                     </div>
                                 </div>
-                                <div class="alert alert-danger border-0 alert-dismissible text-center"  style="display: none;padding-right: 20px;" id="msj_alert">
-                                    <span class="font-weight-semibold">¡Acceso denegado!</span>
+                                <div class="alert alert-danger border-0 alert-dismissible text-center" style="display: none;padding-right: 20px;" id="msj_alert">
                                 </div>
-                                <div class="d-flex align-items-sm-end">
-                                    <button type="button" class="btn btn-primary btn-sm ml-auto" onclick="log_autentic_almacenista()" id="btn_send_vale_aut">Aceptar</button>
+                                <div class="text-right">
+                                    <button type="button" class="btn btn-link legitRipple btn-sm" data-dismiss="modal">Cerrar</button>
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="log_autentic()">Aceptar</button>
                                 </div>
                             </form>
                             <!-- /login form -->                                              

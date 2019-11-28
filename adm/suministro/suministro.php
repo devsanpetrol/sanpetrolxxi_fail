@@ -209,23 +209,35 @@ class suministro extends conect
         $resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
         return $resultado;
     }
-    public function set_update_salida($id_pedido,$cod_articulo, $cantidad_apartado, $cantidad_entregado){
-        $sql1 = $this->_db->prepare("UPDATE adm_pedido SET adm_pedido.cantidad_apartado = '$cantidad_apartado', adm_pedido.cantidad_entregado = '$cantidad_entregado' WHERE adm_pedido.id_pedido = $id_pedido LIMIT 1");
-        $sql2 = $this->_db->prepare("UPDATE adm_almacen SET adm_almacen.stock = (adm_almacen.stock - $cantidad_entregado) WHERE adm_almacen.cod_articulo = '$cod_articulo' LIMIT 1");
-        $resultado1 = $sql1->execute();
-        $resultado2 = $sql2->execute();
-        return $resultado1;
-    }
-    public function set_vale_salida($folio_vale, $encargado_almacen, $observacion){
-        $sql = $this->_db->prepare("INSERT INTO adm_almacen_valesalida (folio_vale,encargado_almacen,fecha_firma_encargado,observacion)
+    public function set_vale_salida($folio_vale, $encargado_almacen, $visto_bueno, $observacion){
+        if($visto_bueno == ""){
+            $sql = $this->_db->prepare("INSERT INTO adm_almacen_valesalida (folio_vale,encargado_almacen,fecha_firma_encargado, observacion)
                                     VALUES ('$folio_vale','$encargado_almacen',NOW(),'$observacion')");
-        $resultado = $sql->execute();
-        return $resultado;
+            $resultado = $sql->execute();
+            return $resultado;
+        }else{
+            $sql = $this->_db->prepare("INSERT INTO adm_almacen_valesalida (folio_vale,encargado_almacen,fecha_firma_encargado, visto_bueno, fecha_firma_vobo, observacion)
+                                    VALUES ('$folio_vale','$encargado_almacen',NOW(),'$visto_bueno',NOW(),'$observacion')");
+            $resultado = $sql->execute();
+            return $resultado;
+        }
+        
     }
-    public function update_vale_salida_detail($folio_vale,$cantidad_surtir,$id_pedido){
-        $sql = $this->_db->prepare("UPDATE adm_pedido  SET cantidad_surtir = '$cantidad_surtir', folio_vale_salida = '$folio_vale' WHERE id_pedido = '$id_pedido'");
-        $resultado = $sql->execute();
-        return $resultado;
+    public function set_update_salida($folio_vale, $id_pedido,$cod_articulo, $cantidad_surtir,$update_almacen){
+        $sql1 = $this->_db->prepare("UPDATE adm_pedido SET adm_pedido.cantidad_apartado = (adm_pedido.cantidad_apartado - $cantidad_surtir), adm_pedido.cantidad_entregado = (adm_pedido.cantidad_entregado + $cantidad_surtir), cantidad_surtir = 0 WHERE adm_pedido.id_pedido = $id_pedido LIMIT 1");
+        $sql2 = $this->_db->prepare("UPDATE adm_almacen SET adm_almacen.stock = (adm_almacen.stock - $cantidad_surtir) WHERE adm_almacen.cod_articulo = '$cod_articulo' LIMIT 1");
+        $sql3 = $this->_db->prepare("UPDATE adm_pedido  SET cantidad_surtir = '$cantidad_surtir' WHERE id_pedido = '$id_pedido'");
+        
+        if($update_almacen == "si"){
+            $resultado1 = $sql1->execute();
+            $resultado2 = $sql2->execute();
+            $request = $resultado1 * $resultado2;
+        }elseif($update_almacen == "no"){
+            $resultado3 = $sql3->execute();
+            $request    = $resultado3;
+        }
+        
+        return $request;
     }
     public function aut_encargado_almacen($usuario, $password, $tokenid){
         $sql = $this->_db->prepare("SELECT id_empleado FROM adm_login WHERE adm_login.usuario = '$usuario' AND adm_login.pass = '$password' AND adm_login.estado = 1 LIMIT 1");
@@ -233,7 +245,7 @@ class suministro extends conect
         $resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
         if(count($resultado) > 0){
             $id_empleado = $resultado[0]["id_empleado"];
-            $sql2 = $this->_db->prepare("SELECT nombre, apellidos, cargo, email, result FROM adm_view_autentificar WHERE id_empleado = '$id_empleado' AND status = 1 AND clase = '$tokenid' LIMIT 1");
+            $sql2 = $this->_db->prepare("SELECT id_empleado, nombre, apellidos, cargo, email, result FROM adm_view_autentificar WHERE id_empleado = '$id_empleado' AND status = 1 AND clase = '$tokenid' LIMIT 1");
             $sql2->execute();
             $resultado2 = $sql2->fetchAll(PDO::FETCH_ASSOC);
             if(count($resultado2) > 0){

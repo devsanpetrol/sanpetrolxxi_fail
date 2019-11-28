@@ -7,11 +7,12 @@
         
         $folio_vale = $_POST['folio_vale'];
         $encargado_almacen = $_POST['encargado_almacen'];
+        $visto_bueno = $_POST['visto_bueno'];
         $observacion = $_POST['observacion'];
         
-        $guarda  = $suministro -> set_vale_salida($folio_vale, $encargado_almacen, $observacion);
+        $guarda  = $suministro -> set_vale_salida($folio_vale, $encargado_almacen, $visto_bueno, $observacion);
         if ($guarda == true){
-            $data[] = array("result"=>'exito');
+            $data[] = array("result"=>'exito', "folio_vale" => $folio_vale);
         }else{
             $data[] = array("result"=>'falla_guardado');
         }

@@ -13,10 +13,10 @@
         if ($guarda == true){
             $data[] = array("result"=>'exito');
         }else{
-            $data[] = array("result"=>'falla_guardado');
+            $data[] = array("result"=>'fallo');
         }
     }else{
-            $data[] = array("result"=>'falla_recepcion_dato');
+            $data[] = array("result"=>'no_dato');
     }
     
     header('Content-Type: application/json');
