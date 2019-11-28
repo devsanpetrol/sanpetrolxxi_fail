@@ -216,14 +216,14 @@ class suministro extends conect
         $resultado2 = $sql2->execute();
         return $resultado1;
     }
-    public function set_vale_salida($folio_vale,$fecha_salida,$encargado_almacen,$visto_bueno,$recibe_vale,$observacion){
-        $sql = $this->_db->prepare("INSERT INTO adm_almacen_valesalida (folio_vale,fecha_salida,encargado_almacen,visto_bueno,recibe_vale,observacion)
-                                    VALUES ('$folio_vale','$fecha_salida','$encargado_almacen','$visto_bueno','$recibe_vale','$observacion')");
+    public function set_vale_salida($folio_vale, $encargado_almacen, $observacion){
+        $sql = $this->_db->prepare("INSERT INTO adm_almacen_valesalida (folio_vale,encargado_almacen,fecha_firma_encargado,observacion)
+                                    VALUES ('$folio_vale','$encargado_almacen',NOW(),'$observacion')");
         $resultado = $sql->execute();
         return $resultado;
     }
-    public function update_vale_salida_detail($folio_vale,$cantidad_surtida,$id_pedido){
-        $sql = $this->_db->prepare("UPDATE adm_pedido  SET cantidad_surtir = '$cantidad_surtida', folio_vale_salida = '$folio_vale' WHERE id_pedido = '$id_pedido'");
+    public function update_vale_salida_detail($folio_vale,$cantidad_surtir,$id_pedido){
+        $sql = $this->_db->prepare("UPDATE adm_pedido  SET cantidad_surtir = '$cantidad_surtir', folio_vale_salida = '$folio_vale' WHERE id_pedido = '$id_pedido'");
         $resultado = $sql->execute();
         return $resultado;
     }
@@ -233,16 +233,16 @@ class suministro extends conect
         $resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
         if(count($resultado) > 0){
             $id_empleado = $resultado[0]["id_empleado"];
-            $sql2 = $this->_db->prepare("SELECT * FROM adm_view_responsable_depto WHERE adm_view_responsable_depto.id_empleado = '$id_empleado' AND adm_view_responsable_depto.id_departamento = '$tokenid' AND adm_view_responsable_depto.status = 1 LIMIT 1");
+            $sql2 = $this->_db->prepare("SELECT nombre, apellidos, cargo, email, result FROM adm_view_autentificar WHERE id_empleado = '$id_empleado' AND status = 1 AND clase = '$tokenid' LIMIT 1");
             $sql2->execute();
             $resultado2 = $sql2->fetchAll(PDO::FETCH_ASSOC);
             if(count($resultado2) > 0){
                 return $resultado2;
             }else{
-                return false;
+                return "acount_denied";
             }
         }else{
-            return false;
+            return "error_acount";
         }
     }
 }

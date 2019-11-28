@@ -7,9 +7,16 @@
     $tokenid  = $_POST['tokenid'];
 
     $resultado = $suministro->aut_encargado_almacen($usuario, $password, $tokenid);
-    $datos = array('resultado' => "no");
 
-    if($resultado){
+    if($resultado == "error_acount"){
+        $datos = array(
+            'result' => "error_acount",
+        );
+    }elseif($resultado == "acount_denied"){
+        $datos = array(
+            'result' => "acount_denied",
+        );
+    }else{
         $datos = $resultado[0];
     }
     header('Content-Type: application/json');

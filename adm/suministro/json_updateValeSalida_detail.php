@@ -5,11 +5,11 @@
     
     if(!empty($_POST['folio_vale'])){
         
-        $folio_vale   = $_POST['folio_vale'];
-        $fecha_salida = $_POST['cantidad_surtida'];
-        $id_pedido    = $_POST['id_pedido'];
+        $folio_vale      = $_POST['folio_vale'];
+        $cantidad_surtir = $_POST['cantidad_surtir'];
+        $id_pedido       = $_POST['id_pedido'];
 
-        $guarda  = $suministro->set_vale_salida_detail($folio_vale, $cantidad_surtida, $id_pedido);
+        $guarda  = $suministro -> update_vale_salida_detail($folio_vale, $cantidad_surtir, $id_pedido);
         if ($guarda == true){
             $data[] = array("result"=>'exito');
         }else{

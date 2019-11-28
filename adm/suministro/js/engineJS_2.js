@@ -180,7 +180,11 @@ function agrega_pase(id_pedido){
             if($("#card_almacen_pase").data("vista") == "no"){
                 setTimeout(function() {
                     fecha_actual();
+                    $("#vale_almacensitax").val("").data("idempleado","");
+                    $("#btn_envia_valesalida").prop('disabled', true);
+                    $("#vale_almacensita_check").slideUp();
                     $("#card_almacen_pase").slideToggle();
+                    $("#vale_almacensita_genera").prop('disabled', false);
                 }, 1000);
             }
             $("#card_almacen_pase").data("vista","si");
@@ -240,16 +244,15 @@ function agrega_pase(id_pedido){
         if( aprueba == null){
             $("#mod_log_acces").modal("show");
         }else{
+            var folio = $('#num_folio_vale_salida').text();
+            insert_vale_salida(folio);
             $(".input-surtido-genera").each(function(){
                 var id_pedido   = $(this).data('idpedido');
-                var codarticulo = $(this).data('codarticulo');
-                var apartado    = parseInt($(this).data('apartado'));
                 var surtido     = parseInt($(this).val());
-                var nuevo_apartado = apartado-surtido;
             });
         }
  }
- function log_autentic_almacenista(){
+function log_autentic_almacenista(){
      var password = $("#password").val();
      var usuario  = $("#usuario").val();
      var tokenid  = $("#log_autentic_almacenista").data("tokenid");
@@ -258,13 +261,26 @@ function agrega_pase(id_pedido){
         url: 'json_aut_almacen.php',
         type: 'POST',
         success:(function(res){
-            /*if(res.resultado == "ok"){
-                $("#btn_envia_valesalida").data("aprobado","aprobado");
-            }else{
-                
+            if(res.result == "error_acount"){
                 $("#msj_alert").show(200);
-            }*/
-            alert(res.apellidos);
+                $("#msj_alert").html("<span class='font-weight-semibold'>Error en los datos de la cuenta</span>");
+            }else if(res.result == "acount_denied"){
+                $("#msj_alert").show(200);
+                $("#msj_alert").html("<span class='font-weight-semibold'>¡Acceso denegado!</span>");
+            }else if(res.result == "ok"){
+                var nombrex = res.nombre+" "+res.apellidos;
+                $("#vale_almacensita_check").slideDown();
+                $("#vale_almacensitax").val(nombrex).data("idempleado",res.id_empleado);
+                $("#btn_envia_valesalida").prop('disabled', false);
+                $("#vale_almacensita_genera").prop('disabled', true);
+                $(".input-surtido-genera").each(function(){//
+                    $(this).prop('disabled', true);
+                });
+                $(".remover-item-pase").each(function(){
+                    $(this).remove();
+                });
+                $("#mod_log_acces").modal("hide");
+            }
         })
     });
  }
@@ -280,3 +296,19 @@ function getFolio(string) {
     var numbers = map.filter(function(value) { return value != undefined; });
     return numbers.join("");
 }
+function insert_vale_salida(folio_vale, encargado_almacen, observacion){
+     $.ajax({
+        data:{folio_vale:folio_vale, encargado_almacen:encargado_almacen, observacion:observacion},
+        url: 'json_insertValeSalida.php',
+        type: 'POST',
+        success:(function(res){
+            if(res.result == "exito"){
+                
+            }else if(res.result == "falla_guardado"){
+                
+            }else if(res.result == "falla_recepcion_dato"){
+                
+            }
+        })
+    });
+ }

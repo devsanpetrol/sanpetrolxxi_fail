@@ -100,22 +100,30 @@
                     </div>
                     <div class="card-footer d-flex justify-content-between align-items-center">
                         <div class="row w-100">
-                            <div class="col-sm-6 form-group">
+                            <div class="col-sm-4 form-group">
                                 <div class="form-group-feedback form-group-feedback-right">
-                                    <input type="text" class="form-control" data-idempleado="" id="vale_observacion">
+                                    <input type="text" class="form-control" readonly value="" data-idempleado="" id="vale_almacensitax">
                                     <div class="d-block form-text text-justify">
-                                        <span class="badge">Observación</span>
+                                        <span class="badge">Encargado Almacen</span>
+                                        <i class="icon-checkmark-circle text-success" id="vale_almacensita_check" style="display: none;"></i>
                                     </div>
                                     <div class="form-control-feedback">
-                                        <i class="icon-pencil3 text-muted"></i>
+                                        <button type="button" class="btn alpha-primary text-primary-800 btn-icon ml-2 legitRipple btn-sm" id="vale_almacensita_genera" onclick="genera_pase_salida()">
+                                            <i class="icon-pencil3 text-blue-800"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-4 form-group">
-                                
+                            <div class="col-sm-6 form-group">
+                                <div class="form-group-feedback form-group-feedback-right">
+                                    </div>
+                                    <input type="text" class="form-control" id="vale_observacion">
+                                    <div class="d-block form-text text-justify">
+                                        <span class="badge">Observación</span>
+                                </div>
                             </div>
                             <div class="col-sm-2 form-group text-right">
-                                <button type="button" class="btn btn-success btn-sm w-100" data-aprobado="" id="btn_envia_valesalida" onclick="genera_pase_salida()"><i class="icon-clipboard5 mr-2"></i> Enviar</button>
+                                <button type="button" class="btn btn-success btn-sm" data-aprobado="" id="btn_envia_valesalida" onclick="" disabled><i class="icon-clipboard5 mr-2"></i> Enviar</button>
                             </div>
                             </div>
                     </div>
@@ -157,7 +165,7 @@
                                 <h5 class="mb-0">ALMACEN</h5>
                                 <div class="text-muted">Ingrese sus credenciales para validar y continuar la operación</div>
                             </div>
-                            <form autocomplete="off" id="log_autentic_almacenista" data-tokenid="5">
+                            <form autocomplete="off" id="log_autentic_almacenista" data-tokenid="salida_almacen_01">
                                 <div class="form-group form-group-feedback form-group-feedback-left">
                                     <input type="text" class="form-control" placeholder="Usuario" name="usuario" id="usuario">
                                     <div class="form-control-feedback">
@@ -174,7 +182,7 @@
                                     <span class="font-weight-semibold">¡Acceso denegado!</span>
                                 </div>
                                 <div class="d-flex align-items-sm-end">
-                                    <button type="button" class="btn btn-primary btn-sm ml-auto" onclick="log_autentic_almacenista()">Aceptar <i class="icon-lock5 ml-2"></i></button>
+                                    <button type="button" class="btn btn-primary btn-sm ml-auto" onclick="log_autentic_almacenista()" id="btn_send_vale_aut">Aceptar</button>
                                 </div>
                             </form>
                             <!-- /login form -->                                              

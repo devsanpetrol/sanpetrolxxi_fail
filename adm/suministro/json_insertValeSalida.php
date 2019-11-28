@@ -6,13 +6,10 @@
     if(!empty($_POST['folio_vale'])){
         
         $folio_vale = $_POST['folio_vale'];
-        $fecha_salida = $_POST['fecha_salida'];
         $encargado_almacen = $_POST['encargado_almacen'];
-        $visto_bueno = $_POST['visto_bueno'];
-        $recibe_vale = $_POST['recibe_vale'];
         $observacion = $_POST['observacion'];
         
-        $guarda  = $suministro->set_vale_salida($folio_vale, $fecha_salida, $encargado_almacen, $visto_bueno, $recibe_vale, $observacion);
+        $guarda  = $suministro -> set_vale_salida($folio_vale, $encargado_almacen, $observacion);
         if ($guarda == true){
             $data[] = array("result"=>'exito');
         }else{
