@@ -25,7 +25,7 @@
             <!-- Page header -->
             <div class="content d-flex justify-content-center align-items-center">
                 <!-- Login form -->
-                <form class="login-form" action="engine_session.php" method="post" id="form_login">
+                <form class="login-form" action="engine_session.php" method="post" id="form_login" autocomplete="off">
                     <div class="card mb-0">
                         <div class="card-body">
                             <div class="text-center mb-3">
@@ -34,13 +34,13 @@
                                 <span class="d-block text-muted">Ingrese sus credenciales</span>
                             </div>
                             <div class="form-group form-group-feedback form-group-feedback-left">
-                                <input type="text" class="form-control" placeholder="Usuario" id="user" name="user">
+                                <input type="text" class="form-control" placeholder="Usuario" id="user" name="user" autocomplete="off">
                                 <div class="form-control-feedback">
                                     <i class="icon-user text-muted"></i>
                                 </div>
                             </div>
                             <div class="form-group form-group-feedback form-group-feedback-left">
-                                <input type="password" class="form-control" placeholder="Contraseña" id="password" name="password">
+                                <input type="password" class="form-control" placeholder="Contraseña" id="password" name="password" autocomplete="off">
                                 <div class="form-control-feedback">
                                     <i class="icon-lock2 text-muted"></i>
                                 </div>
