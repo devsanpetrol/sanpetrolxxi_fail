@@ -221,17 +221,18 @@ class suministro extends conect
             $resultado = $sql->execute();
             return $resultado;
         }
-        
     }
     public function set_update_salida($folio_vale, $id_pedido,$cod_articulo, $cantidad_surtir,$update_almacen){
         $sql1 = $this->_db->prepare("UPDATE adm_pedido SET adm_pedido.cantidad_apartado = (adm_pedido.cantidad_apartado - $cantidad_surtir), adm_pedido.cantidad_entregado = (adm_pedido.cantidad_entregado + $cantidad_surtir), cantidad_surtir = 0 WHERE adm_pedido.id_pedido = $id_pedido LIMIT 1");
         $sql2 = $this->_db->prepare("UPDATE adm_almacen SET adm_almacen.stock = (adm_almacen.stock - $cantidad_surtir) WHERE adm_almacen.cod_articulo = '$cod_articulo' LIMIT 1");
         $sql3 = $this->_db->prepare("UPDATE adm_pedido  SET cantidad_surtir = '$cantidad_surtir' WHERE id_pedido = '$id_pedido'");
+        $sql4 = $this->_db->prepare("INSERT INTO adm_almacen_valesalida_detail (cantidad_surtida, folio_vale, id_pedido, fecha) VALUES ('$cantidad_surtir', $folio_vale, $id_pedido, NOW())");
         
         if($update_almacen == "si"){
             $resultado1 = $sql1->execute();
             $resultado2 = $sql2->execute();
-            $request = $resultado1 * $resultado2;
+            $resultado4 = $sql4->execute();
+            $request = $resultado1*$resultado2*$resultado4;
         }elseif($update_almacen == "no"){
             $resultado3 = $sql3->execute();
             $request    = $resultado3;

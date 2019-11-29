@@ -263,10 +263,10 @@ function agrega_pase(id_pedido){
 
 function insert_vale_salida(){
     var folio_vale        = $('#num_folio_vale_salida').text();
-    var encargado_almacen = $("#firma_almacensita").data("idempleado");
+    var encargado_almacen = $("#firma_almacenista").data("idempleado");
     var visto_bueno       = $("#firma_vobo").data("idempleado");
     var observacion       = $('#vale_observacion').val();
-    
+    var total             = 0;
     $.ajax({
         data:{folio_vale:folio_vale, encargado_almacen:encargado_almacen, visto_bueno:visto_bueno, observacion:observacion},
         url: 'json_insertValeSalida.php',
@@ -275,26 +275,42 @@ function insert_vale_salida(){
             if(res.result == "exito"){
                 $(".input-surtido-genera").each(function(){
                     var folio_vale      = res.folio_vale;
-                    var cantidad_surtir = $(this).val();
+                    var cantidad_surtir = parseFloat($(this).val());
                     var id_pedido       = $(this).data("idpedido");
                     var cod_articulo    = $(this).data("codarticulo");
                     var update_almacen  = ( visto_bueno != "" ) ? 'si' : 'no';
-                    
-                    $.ajax({
-                        data:{folio_vale:folio_vale, cantidad_surtir:cantidad_surtir, id_pedido:id_pedido, cod_articulo:cod_articulo, update_almacen:update_almacen},
-                        url: 'json_update_almacen_pedido.php',
-                        type: 'POST',
-                        success:(function(result){
-                            
-                        })
-                    });
-                    
+                    total = total + cantidad_surtir;
+                    if( cantidad_surtir > 0 ){
+                        $.ajax({
+                            data:{folio_vale:folio_vale, cantidad_surtir:cantidad_surtir, id_pedido:id_pedido, cod_articulo:cod_articulo, update_almacen:update_almacen},
+                            url: 'json_update_almacen_pedido.php',
+                            type: 'POST',
+                            success:(function(result){
+                                if(result.result == "exito"){
+                                    console.log("Guarda detalle: Generado con exito!: id_pedido"+id_pedido);
+                                }else if(result.result == "falla_guardado"){
+                                    console.log("Guarda detalle: Ocurrión un error al guardar los datos: id_pedido"+id_pedido);
+                                }else if(result.result == "falla_recepcion_dato"){
+                                    console.log("Guarda detalle: La informacion enviada no es valida: id_pedido"+id_pedido);
+                                }
+                            })
+                        });
+                    }
                 });
             }else if(res.result == "falla_guardado"){
-                
+                console.log("Guarda Salida: Ocurrión un error al guardar los datos");
             }else if(res.result == "falla_recepcion_dato"){
-                
+                console.log("Guarda Salida: La informacion enviada no es valida");
             }
+        }),
+        complete:(function(){
+            if (total === 0){
+                alert("Ningun cambio realizado");
+            }
+            resetear_tabla_surtir();
+            $(".card-pedidos-xsurtir").slideDown();
+            var t = $('#datatable_almacen_salida').DataTable();
+            t.draw();
         })
     });
  }
@@ -323,6 +339,7 @@ function insert_vale_salida(){
         $(".remover-item-pase").each(function(){
             $(this).remove();
         });
+        $(".card-pedidos-xsurtir").hide();
     }
  }
  function  fecha_actual(){
@@ -336,4 +353,13 @@ function insert_vale_salida(){
     
     var numbers = map.filter(function(value) { return value != undefined; });
     return numbers.join("");
+ }
+ function resetear_tabla_surtir(){
+    var a = $("#datatable_almacen_pase").DataTable();
+    
+    $("#card_almacen_pase").slideUp();
+    a.clear().draw();
+    aplica_firma("firma_almacenista","","");
+    aplica_firma("firma_vobo","","");
+    $("#btn_envia_valesalida").attr("disabled",true);
  }

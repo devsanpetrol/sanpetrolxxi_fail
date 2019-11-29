@@ -137,14 +137,14 @@
                                 </div>
                             </div>
                             <div class="col-sm-2 form-group text-right">
-                                <button type="button" class="btn btn-success btn-sm" data-aprobado="" id="btn_envia_valesalida" onclick="guardar_vale_salida_almacen()" disabled><i class="icon-clipboard5 mr-2"></i> Enviar</button>
+                                <button type="button" class="btn btn-success btn-sm" data-aprobado="" id="btn_envia_valesalida" onclick="insert_vale_salida()" disabled><i class="icon-clipboard5 mr-2"></i> Enviar</button>
                             </div>
                             </div>
                     </div>
                 </div>
                 <!-- /invoice archive -->
                 <!-- Invoice archive -->
-                <div class="card">
+                <div class="card card-pedidos-xsurtir">
                     <table class="table table-responsive-sm table-xs dt-responsive" id="datatable_almacen_salida" width="100%">
                         <thead>
                             <tr>
