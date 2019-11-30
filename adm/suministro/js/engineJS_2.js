@@ -33,6 +33,9 @@ $(document).ready( function () {
         ordering: false,
         bDestroy: true,
         paging: false,
+        processing: true,
+        serverSide: true,
+        serverMethod: 'post',
         dom: '<"datatable-scroll-wrap"t><"datatable-footer"i>',
         ajax: {
             url: "json_selectAlmacenSalida.php",
@@ -183,10 +186,12 @@ function agrega_pase(id_pedido){
                     aplica_firma("firma_almacenista","","");
                     aplica_firma("firma_vobo","","");
                     $("#btn_envia_valesalida").attr("disabled",true);
-                    $("#card_almacen_pase").slideToggle();
+                    $("#card_almacen_pase").slideDown("slow");
                 }, 1000);
             }
+            
             $("#card_almacen_pase").data("vista","si");
+            
             $("#number_"+id_pedido).bind('keyup mouseup', function () {
                 var max = parseInt($("#number_"+id_pedido).attr("max"));
                 var val = parseInt($("#number_"+id_pedido).val());
@@ -229,7 +234,7 @@ function agrega_pase(id_pedido){
         
         if(!tabla.data().any()){
             setTimeout(function() {
-                $("#card_almacen_pase").slideToggle();
+                $("#card_almacen_pase").slideUp("slow");
                 $("#card_almacen_pase").data("vista","no");
             }, 500);
         }
@@ -308,9 +313,9 @@ function insert_vale_salida(){
                 alert("Ningun cambio realizado");
             }
             resetear_tabla_surtir();
-            $(".card-pedidos-xsurtir").slideDown();
             var t = $('#datatable_almacen_salida').DataTable();
-            t.draw();
+            t.clear().draw(false);
+            $(".card-pedidos-xsurtir").slideDown();
         })
     });
  }
@@ -339,7 +344,7 @@ function insert_vale_salida(){
         $(".remover-item-pase").each(function(){
             $(this).remove();
         });
-        $(".card-pedidos-xsurtir").hide();
+        $(".card-pedidos-xsurtir").slideUp();
     }
  }
  function  fecha_actual(){
