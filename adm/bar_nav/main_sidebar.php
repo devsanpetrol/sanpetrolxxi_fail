@@ -53,6 +53,7 @@
                     <ul class="nav nav-group-sub" data-submenu-title="Layouts">
                         <li class="nav-item"><a href="inicio.php" class="nav-link">Adquisición de Material</a></li>
                         <li class="nav-item"><a href="almacen_salida.php" class="nav-link">Almacen Salida</a></li>
+                        <li class="nav-item"><a href="aprobacion_salida.php" class="nav-link">Aprobacion Salida</a></li>
                         <li class="nav-item"><a href="detalle_factura.php" class="nav-link">Factura</a></li>
                     </ul>
                 </li>

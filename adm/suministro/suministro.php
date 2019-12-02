@@ -96,12 +96,13 @@ class suministro extends conect
         $resultado = $sql->execute();
         return $resultado;
     }
-    public function get_solicitudes($filtro = ""){
+    //==========================================================================
+    public function get_solicitudes(){
         $sql = $this->_db->prepare("SELECT adm_solicitud_material.folio, adm_solicitud_material.fecha_solicitud, adm_solicitud_material.clave_solicita,adm_persona.nombre,adm_persona.apellidos
                                     FROM adm_solicitud_material
                                     INNER JOIN adm_empleado ON adm_solicitud_material.clave_solicita = adm_empleado.id_empleado
                                     INNER JOIN adm_persona ON adm_empleado.id_persona = adm_persona.id_persona
-                                    WHERE status_solicitud = 0 $filtro ORDER BY adm_solicitud_material.folio DESC");
+                                    WHERE status_solicitud = 0 ORDER BY adm_solicitud_material.folio DESC");
         $sql->execute();
         $resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
         return $resultado;
@@ -112,12 +113,32 @@ class suministro extends conect
         $resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
         return $resultado;
     }
+    //==========================================================================
+    public function get_solicitud_aprobacion(){
+        $sql = $this->_db->prepare("SELECT * FROM adm_view_vale_salida_aprobado_vobo");
+        $sql->execute();
+        $resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
+        return $resultado;
+    }
+    public function get_solicitud_aprobacion_detail(){
+        $sql = $this->_db->prepare("SELECT * FROM adm_view_vale_salida_aprobado_detail");
+        $sql->execute();
+        $resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
+        return $resultado;
+    }
+    public function get_pedidos_salida($folio,$filtro=""){
+        $sql = $this->_db->prepare("SELECT * FROM adm_view_para_firma_vobo WHERE folio_vale = $folio $filtro");
+        $sql->execute();
+        $resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
+        return $resultado;
+    }
     public function get_pedidosTR($folio){
         $sql = $this->_db->prepare("SELECT cantidad,status_pedido,comentario FROM adm_pedido WHERE folio = $folio");
         $sql->execute();
         $resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
         return $resultado;
     }
+    //==========================================================================
     public function get_pedidos_count($folio){
         $sql = $this->_db->prepare("SELECT count(*) as c FROM adm_pedido WHERE folio = $folio");
         $sql->execute();
@@ -235,7 +256,8 @@ class suministro extends conect
             $request = $resultado1*$resultado2*$resultado4;
         }elseif($update_almacen == "no"){
             $resultado3 = $sql3->execute();
-            $request    = $resultado3;
+            $resultado4 = $sql4->execute();
+            $request    = $resultado3*$resultado4;
         }
         
         return $request;
