@@ -102,8 +102,8 @@
                         <div class="row w-100">
                             <div class="col-sm-3 form-group">
                                 <div class="form-group-feedback form-group-feedback-right">
-                                    <input type="text" class="form-control text-pink" readonly data-idempleado="" data-tokenid="salida_almacen_01" id="firma_almacenista">
-                                    <div class="d-block form-text text-justify">
+                                    <input type="text" class="form-control form-control-sm font-weight-semibold text-pink text-center" readonly data-idempleado="" data-tokenid="salida_almacen_01" id="firma_almacenista">
+                                    <div class="d-block form-text text-center">
                                         <span class="badge">Encargado Almacen</span>
                                         <i class="icon-checkmark-circle text-success" id="firma_almacenista_check" style="display: none;"></i>
                                     </div>
@@ -116,8 +116,8 @@
                             </div>
                             <div class="col-sm-3 form-group">
                                 <div class="form-group-feedback form-group-feedback-right">
-                                    <input type="text" class="form-control text-pink" readonly data-idempleado="" data-tokenid="salida_almacen_vobo_1" id="firma_vobo">
-                                    <div class="d-block form-text text-justify">
+                                    <input type="text" class="form-control form-control-sm font-weight-semibold text-pink text-center" readonly data-idempleado="" data-tokenid="salida_almacen_vobo_1" id="firma_vobo">
+                                    <div class="d-block form-text text-center">
                                         <span class="badge">Vo. Bo.</span>
                                         <i class="icon-checkmark-circle text-success" id="firma_vobo_check" style="display: none;"></i>
                                     </div>
@@ -131,7 +131,7 @@
                             <div class="col-sm-4 form-group">
                                 <div class="form-group-feedback form-group-feedback-right">
                                     </div>
-                                    <input type="text" class="form-control" id="vale_observacion">
+                                <input type="text" class="form-control form-control-sm font-weight-semibold text-blue-800" id="vale_observacion" onkeyup="mayus(this);" maxlength="200">
                                     <div class="d-block form-text text-justify">
                                         <span class="badge">Observación</span>
                                 </div>

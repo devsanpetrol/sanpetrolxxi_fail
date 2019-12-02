@@ -33,6 +33,9 @@ $(document).ready( function () {
         ordering: false,
         bDestroy: true,
         paging: false,
+        processing: true,
+        serverSide: true,
+        serverMethod: 'post',
         dom: '<"datatable-scroll-wrap"t><"datatable-footer"i>',
         ajax: {
             url: "json_selectAlmacenSalida.php",
@@ -183,7 +186,7 @@ function agrega_pase(id_pedido){
                     aplica_firma("firma_almacenista","","");
                     aplica_firma("firma_vobo","","");
                     $("#btn_envia_valesalida").attr("disabled",true);
-                    $("#card_almacen_pase").slideToggle();
+                    $("#card_almacen_pase").slideDown();
                 }, 1000);
             }
             $("#card_almacen_pase").data("vista","si");
@@ -229,7 +232,7 @@ function agrega_pase(id_pedido){
         
         if(!tabla.data().any()){
             setTimeout(function() {
-                $("#card_almacen_pase").slideToggle();
+                $("#card_almacen_pase").slideUp();
                 $("#card_almacen_pase").data("vista","no");
             }, 500);
         }
@@ -261,59 +264,7 @@ function agrega_pase(id_pedido){
     });
  }
 
-function insert_vale_salida(){
-    var folio_vale        = $('#num_folio_vale_salida').text();
-    var encargado_almacen = $("#firma_almacenista").data("idempleado");
-    var visto_bueno       = $("#firma_vobo").data("idempleado");
-    var observacion       = $('#vale_observacion').val();
-    var total             = 0;
-    $.ajax({
-        data:{folio_vale:folio_vale, encargado_almacen:encargado_almacen, visto_bueno:visto_bueno, observacion:observacion},
-        url: 'json_insertValeSalida.php',
-        type: 'POST',
-        success:(function(res){
-            if(res.result == "exito"){
-                $(".input-surtido-genera").each(function(){
-                    var folio_vale      = res.folio_vale;
-                    var cantidad_surtir = parseFloat($(this).val());
-                    var id_pedido       = $(this).data("idpedido");
-                    var cod_articulo    = $(this).data("codarticulo");
-                    var update_almacen  = ( visto_bueno != "" ) ? 'si' : 'no';
-                    total = total + cantidad_surtir;
-                    if( cantidad_surtir > 0 ){
-                        $.ajax({
-                            data:{folio_vale:folio_vale, cantidad_surtir:cantidad_surtir, id_pedido:id_pedido, cod_articulo:cod_articulo, update_almacen:update_almacen},
-                            url: 'json_update_almacen_pedido.php',
-                            type: 'POST',
-                            success:(function(result){
-                                if(result.result == "exito"){
-                                    console.log("Guarda detalle: Generado con exito!: id_pedido"+id_pedido);
-                                }else if(result.result == "falla_guardado"){
-                                    console.log("Guarda detalle: Ocurrión un error al guardar los datos: id_pedido"+id_pedido);
-                                }else if(result.result == "falla_recepcion_dato"){
-                                    console.log("Guarda detalle: La informacion enviada no es valida: id_pedido"+id_pedido);
-                                }
-                            })
-                        });
-                    }
-                });
-            }else if(res.result == "falla_guardado"){
-                console.log("Guarda Salida: Ocurrión un error al guardar los datos");
-            }else if(res.result == "falla_recepcion_dato"){
-                console.log("Guarda Salida: La informacion enviada no es valida");
-            }
-        }),
-        complete:(function(){
-            if (total === 0){
-                alert("Ningun cambio realizado");
-            }
-            resetear_tabla_surtir();
-            $(".card-pedidos-xsurtir").slideDown();
-            var t = $('#datatable_almacen_salida').DataTable();
-            t.draw();
-        })
-    });
- }
+
  
  function firma_almacen(firmax){
     $("#log_autentic_almacenista").trigger("reset");
@@ -356,10 +307,85 @@ function insert_vale_salida(){
  }
  function resetear_tabla_surtir(){
     var a = $("#datatable_almacen_pase").DataTable();
-    
-    $("#card_almacen_pase").slideUp();
+    $("#card_almacen_pase").data("vista","no").slideUp();
     a.clear().draw();
     aplica_firma("firma_almacenista","","");
     aplica_firma("firma_vobo","","");
+    $("#vale_observacion").val("");
     $("#btn_envia_valesalida").attr("disabled",true);
  }
+ function insert_vale_salida(){
+    var folio_vale = parseInt($('#num_folio_vale_salida').text());
+    if (isChangeSalida()){
+        guarda_vale_salida(folio_vale);
+    }else{
+        alert("No se realizó ningun surtido");
+        resetear_tabla_surtir();
+        $(".card-pedidos-xsurtir").slideDown();
+        var t = $('#datatable_almacen_salida').DataTable();
+        t.draw();
+    }
+ }
+ function guarda_vale_salida(folio_vale){
+    var encargado_almacen = $("#firma_almacenista").data("idempleado");
+    var visto_bueno       = $("#firma_vobo").data("idempleado");
+    var observacion       = $('#vale_observacion').val();
+    
+    $.ajax({
+        data:{folio_vale:folio_vale, encargado_almacen:encargado_almacen, visto_bueno:visto_bueno, observacion:observacion},
+        url: 'json_insertValeSalida.php',
+        type: 'POST',
+        success:(function(res){
+            if(res.result == "exito"){
+                guarda_elemento_vale_salida(folio_vale,visto_bueno);
+            }else if(res.result == "falla_guardado"){
+                console.log("Guarda Salida: Ocurrión un error al guardar los datos");
+            }else if(res.result == "falla_recepcion_dato"){
+                console.log("Guarda Salida: La informacion enviada no es valida");
+            }
+        }),
+        complete:(function(){
+            resetear_tabla_surtir();
+            $(".card-pedidos-xsurtir").slideDown();
+            var t = $('#datatable_almacen_salida').DataTable();
+            t.draw();
+        })
+    });
+ }
+ function guarda_elemento_vale_salida(folio_vale,visto_bueno){
+    $(".input-surtido-genera").each(function(){
+        var cantidad_surtir = parseFloat($(this).val());
+        var id_pedido       = $(this).data("idpedido");
+        var cod_articulo    = $(this).data("codarticulo");
+        var ua  = ( visto_bueno != '' ) ? 'si' : 'no';
+
+        if( cantidad_surtir > 0 ){
+            $.ajax({
+                data:{folio_vale:folio_vale, cantidad_surtir:cantidad_surtir, id_pedido:id_pedido, cod_articulo:cod_articulo, update_almacen:ua},
+                url: 'json_update_almacen_pedido.php',
+                type: 'POST',
+                success:(function(result){
+                    if(result.result == "exito"){
+                        console.log("Guarda detalle: Generado con exito!: id_pedido"+id_pedido);
+                    }else if(result.result == "falla_guardado"){
+                        console.log("Guarda detalle: Ocurrión un error al guardar los datos: id_pedido"+id_pedido);
+                    }else if(result.result == "falla_recepcion_dato"){
+                        console.log("Guarda detalle: La informacion enviada no es valida: id_pedido"+id_pedido);
+                    }
+                })
+            });
+        }
+    });
+    
+ }
+ function isChangeSalida(){
+    var flag = 0;
+    $(".input-surtido-genera").each(function(){
+        var flag2 = parseFloat($(this).val());
+        flag += flag2;
+    });
+    return ( flag > 0 ) ? true : false;
+ }
+ function mayus(e) {
+    e.value = e.value.charAt(0).toUpperCase() + e.value.slice(1);
+}

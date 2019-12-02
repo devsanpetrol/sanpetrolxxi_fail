@@ -235,7 +235,8 @@ class suministro extends conect
             $request = $resultado1*$resultado2*$resultado4;
         }elseif($update_almacen == "no"){
             $resultado3 = $sql3->execute();
-            $request    = $resultado3;
+            $resultado4 = $sql4->execute();
+            $request    = $resultado3*$resultado4;
         }
         
         return $request;
