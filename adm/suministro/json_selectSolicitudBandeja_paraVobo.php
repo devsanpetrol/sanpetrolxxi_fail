@@ -26,7 +26,7 @@
         $pedidos = $suministro->get_pedidos_salida($folio);
         $lista = array();
         foreach($pedidos as $valor){
-                $cantidad = $valor['cantidad_surtir'];
+                $cantidad = $valor['cantidad_surtida'];
                 $unidad = $valor['unidad'];
                 $destino = $valor['destino'];
                 $articulo = $valor['articulo'];

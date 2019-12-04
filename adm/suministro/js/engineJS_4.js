@@ -34,42 +34,26 @@ $(document).ready( function () {
             zeroRecords: "Ningun elemento seleccionado"
         }
     });
-    $('#lay_out_solicitudesx_aprobados').DataTable({
-        paging: false,
-        searching: false,
+    $('#dt_for_vobo').DataTable({
         ordering: false,
         bDestroy: true,
-        bInfo: false,
-        processing: true,
-        selected: true,
-        serverSide: true,
-        serverMethod: 'post',
-        ajax: {
-            url: "json_selectSolicitudBandeja_aprobado_detail.php",
-            dataSrc:function ( json ) {
-                return json;
-            }
-        },
+        paging: false,
+        dom: '<"datatable-footer"><"datatable-scroll-wrap"t>',
         createdRow: function ( row, data, index ) {
-            $("#total_pedidos_mostrado").text(index+1);
-            $(row).attr('id',data['folio']);
-            $(row).addClass('unread');
-            $(row).data('scroll');
-            $('td', row).eq(0).addClass('table-inbox-name');
-            $('td', row).eq(1).addClass('table-inbox-message');
-            $('td', row).eq(2).addClass('table-inbox-time');
+            //$(row).attr("id","id_row_"+data[3]);
         },
-        columns: [
-            {data : 'star'},
-            {data : 'pedidos'},
-            {data : 'fecha'}
+        columnDefs: [
+            {targets: 0, width: '4%'},
+            {targets: 1, width: '4%'},
+            {targets: 2, width: '31%'},
+            {targets: 3, width: '28%'},
+            {targets: 4, width: '28%'},
+            {targets: 5, width: '5%'}
         ],
         language: {
-            zeroRecords: "Ningun elemento seleccionado"
+            info: "Mostrando _TOTAL_ registros"
         }
     });
-    //--------TIEMPO REAL ---------
-    
     //--------TIEMPO REAL ---------
     $('#lay_out_solicitudesx tbody').on('click', 'tr', function () {
         var id = this.id;
@@ -84,13 +68,13 @@ $(document).ready( function () {
             }, 200);
             var t = $('#lay_out_solicitudesx').DataTable();
             t.draw( false );
-            $(".display-pedidos").remove();
         }else{
             $("#lay_out_solicitudesx").slideUp();
             
             $("#content_table_pedidos_list").data("scroll",$("html").scrollTop());
             $("#"+id).addClass("sel-item");
             setTimeout(function() {
+                detalle_vale_salida(id);
                 setPedidos(id);
             }, 500);
         }
@@ -101,36 +85,25 @@ $(document).ready( function () {
         
         return false;
     } );
-    $('#lay_out_solicitudesx_aprobados tbody').on('click', 'tr', function () {
-        var id = this.id;
-        
-        $("#lay_out_solicitudesx tbody tr").addClass("ocultatodo");
-        $("#"+id).removeClass("ocultatodo");
-        if ($("#"+id).hasClass('sel-item')){
-            $("#"+id).removeClass("sel-item");
-            $("#lay_out_solicitudesx").slideDown();
-            $('html, body').animate({
-                scrollTop: $("#content_table_pedidos_list").data("scroll")
-            }, 200);
-            var t = $('#lay_out_solicitudesx').DataTable();
-            t.draw( false );
-            $(".display-pedidos").remove();
-        }else{
-            $("#lay_out_solicitudesx").slideUp();
-            
-            $("#content_table_pedidos_list").data("scroll",$("html").scrollTop());
-            $("#"+id).addClass("sel-item");
-            setTimeout(function() {
-                setPedidos(id);
-            }, 500);
+    
+    $('#usuario').select();
+    $("#usuario").keydown(function(){
+            $('#msj_alert').hide();
+            $('#password').val('');
+    });
+    $("#password").keydown(function(){
+            $('#msj_alert').hide();
+    });
+    $("#usuario").on('keyup', function (e) {
+        if (e.keyCode === 13) {
+           $('#password').focus();
         }
-        $("#tools_menu_select").toggle("fast");
-        $("#tools_menu_regresa").data("idrow",id);
-        $(".ocultatodo").toggle("fast");
-        $(".ocultatodo").removeClass("ocultatodo");
-        
-        return false;
-    } );
+    });
+    $("#password").on('keyup', function (e) {
+        if (e.keyCode === 13) {
+            log_autentic();
+        }
+    });
 } );
 function set_list_resp(id_empleado,nombre,apellidos){
     var apellidos_ = apellidos.replace(/ /g, "");
@@ -139,124 +112,38 @@ function set_list_resp(id_empleado,nombre,apellidos){
         $('<li>').addClass(apellidos_+id_empleado).append("<button type='button' class='btn btn-success btn-sm' ><i class='fa fa-user'></i> "+nombre+" "+apellidos+" <i class='fa fa-check-circle-o'></i></button>")
     );
 }
-function generador_layout(){
-    setTimeout(function() {
-        var t = $('#lay_out_solicitudesx').DataTable();
-        t.draw( false );
-    }, 500);
-    $(".display-pedidos").remove();
-}
 function regresar_lista(){
     var idrow = $("#tools_menu_regresa").data("idrow");
     $("#"+idrow+"").click();
 }
-function disable_class_btn(id_pedido,disabled){
-    $("#status_icon_a_"+id_pedido).prop( "disabled", disabled );
-    $("#status_icon_d_"+id_pedido).prop( "disabled", disabled );
-}
-function reset_class_btn(id_pedido){
-    $("#status_icon_a_"+id_pedido).attr("class","btn btn-outline rounded-round btn-icon ml-2 bg-primary text-slate-300 btn-sm");
-    $("#status_icon_d_"+id_pedido).attr("class","btn btn-outline rounded-round btn-icon ml-2 bg-primary text-slate-300 btn-sm");
-}
-function change_status_manager(id_pedido,aprobado){
-    var status = parseInt(aprobado);    
-    var sel_st = $(".menu_items_status_"+id_pedido);
-    
-    sel_st.addClass('disabled');
-    reset_class_btn(id_pedido);
-    
-    switch (status){
-        case 1://status APROBADO
-            var aprobe = $("#status_icon_a_"+id_pedido);
-            aprobe.removeClass("text-slate-300").addClass("text-pink");
-             sel_st.removeClass('disabled');
-          break;
-        case 2:// status CANCELADO
-            var cancel = $("#status_icon_d_"+id_pedido);
-            cancel.removeClass("text-slate-300").addClass("text-pink");
-          break;
-    }
-}
-function save_aprobado(id_pedido){
-    var btn_guarda_a = $("#status_icon_a_"+id_pedido);
-    if (btn_guarda_a.hasClass("text-slate-300")){
-        generic_guarda_status(id_pedido,1);
-    }else{
-        generic_guarda_status(id_pedido,0);
-    }
-}
-function save_cancela(id_pedido){
-    var btn_guarda_c = $("#status_icon_d_"+id_pedido);
-    if (btn_guarda_c.hasClass("text-slate-300")){
-        generic_guarda_status(id_pedido,2);
-    }else{
-        generic_guarda_status(id_pedido,0);
-    }
-}
-function obj_pedido(objeto){
-    var detalle = "style='display: none;'";
-    if(objeto.detalle_articulo.length){
-        detalle = "";
-    }
-   
-    this.elemento = "<div class='col-lg-12 display-pedidos' style='display: none;' id='folio-"+objeto.folio+"'>\
-                        <div class='card border-left-3 border-left-danger rounded-left-0' id='border_card_"+objeto.id_pedido+"'>\
-                            <div class='card-body'>\
-                                <div class='d-sm-flex align-item-sm-center flex-sm-nowrap'>\
-                                    <div>\
-                                        <h6 class='font-weight-semibold'>"+objeto.articulo+"</h6>\
-                                        <ul class='list list-unstyled mb-0'>\
-                                            <li "+detalle+">Detalle articulo : <span class='font-weight-semibold'>"+objeto.detalle_articulo+"</span></li>\
-                                            <li>Justificación : <span class='font-weight-semibold'>"+objeto.justificacion+"</span></li>\
-                                            <li>Categoria: <span class='font-weight-semibold'>"+objeto.categoria+"</span></li>\
-                                        </ul>\
-                                    </div>\
-                                    <div class='text-sm-right mb-0 mt-3 mt-sm-0 ml-auto'>\
-                                        <h6 class='font-weight-semibold' id='cantidad_unidad_edit"+objeto.id_pedido+"' data-unidad='"+objeto.unidad+"'>"+objeto.cantidad+" "+objeto.unidad+" \
-                                            <input type='number' class='font-weight-semibold text-blue-800' step='1' value='"+objeto.cantidad+"' min='0' id='cantidad_"+objeto.id_pedido+"' required='true' style='width: 75px; display: none;'>\
-                                            <button type='button' class='btn btn-icon btn-sm' id='edita_cantidad"+objeto.id_pedido+"' onclick='edita_cantidad("+objeto.id_pedido+")'><i class='icon-pencil7'></i></button>\
-                                            <button type='button' class='btn btn-icon btn-sm' id='guarda_cantidad"+objeto.id_pedido+"' onclick='save_cantidad("+objeto.id_pedido+")' style='display: none;'><i class='icon-floppy-disk'></i></button>\
-                                        </h6>\
-                                        <ul class='list list-unstyled mb-0'>\
-                                            <li>Area/Equipo: <span class='font-weight-semibold'>"+objeto.destino+"</span></li>\
-                                            <li>Programado para: <span class='font-weight-semibold'>"+objeto.fecha_requerimiento+"</span></li>\
-                                        </ul>\
-                                    </div>\
-                                </div>\
-                            </div>\
-                            <div class='card-footer d-sm-flex justify-content-sm-between align-items-sm-center'>\
-                                <span>\
-                                    <span class='badge badge-mark border-danger mr-2'></span>\
-                                    <span class='font-weight-semibold'>"+objeto.fecha_solicitud+"</span>\
-                                </span>\
-                                <ul class='list-inline list-inline-condensed mb-0 mt-2 mt-sm-0'>\
-                                    <li class='list-inline-item' style='display: none;'>\
-                                        <a href='' class='text-default' data-status='0' data-comentario='' onclick='guarda_status("+objeto.id_pedido+")' id='guarda_status_"+objeto.id_pedido+"'><i class='icon-floppy-disk'></i></a>\
-                                    </li>\
-                                    <button type='button' class='btn btn-outline rounded-round btn-icon ml-2 bg-primary text-slate-300 btn-sm' id='status_icon_a_"+objeto.id_pedido+"' onclick='save_aprobado("+objeto.id_pedido+")'><i class='icon-thumbs-up2'></i></button>\
-                                    <button type='button' class='btn btn-outline rounded-round btn-icon ml-2 bg-primary text-slate-300 btn-sm' id='status_icon_d_"+objeto.id_pedido+"' onclick='save_cancela("+objeto.id_pedido+")'><i class='icon-thumbs-down2'></i></button>\
-                                </ul>\
-                            </div>\
-                        </div>\
-                    </div>";
-    
-    $("#tabla_visor_solicitudes").after(this.elemento);
-    if(objeto.comentario.length){
-        $.post( "json_selectPedidoComentario.php",{ id_pedido: objeto.id_pedido }).done(function( data ) {
-            $( "#post_nombre_man"+objeto.id_pedido).append(data[0]["supervisor"]);
-        });
-    }
-    $("#folio-"+objeto.folio).slideDown();
+function detalle_vale_salida(folio_vale){
+    $.ajax({
+        data:{folio_vale:folio_vale},
+        url: 'json_get_folio_detail.php',
+        type: 'POST',
+        success: function (obj) {
+           $("#folio_pase_salida").text(obj.folio_vale);
+           $("#firma_almacenista").val(obj.nombre_encargado+" "+obj.apellido_encargado);
+           $("#vale_observacion").val(obj.observacion);
+            obj.fecha_firma_encargado;
+        },
+        error: function (obj) {
+            alert(obj.msg);
+        },
+        complete:(function(){
+            
+        })
+    });
 }
 function setPedidos(folio){
-    var result;
-    var array_btn_save = [];
+    var t = $('#dt_for_vobo').DataTable();
     var notice = new PNotify();
     $.ajax({
         data:{folio:folio},
-        url: 'json_list_pedido.php',
+        url: 'json_list_pedido_salida.php',
         type: 'POST',
         beforeSend: function (xhr) {
+            t.clear().draw();
             var options = {
                 text: "Recopilando información...",
                 addclass: 'bg-primary border-primary',
@@ -267,10 +154,15 @@ function setPedidos(folio){
             notice.update(options);
         },
         success: function (obj) {
-            result = obj;
             $.each(obj, function (index, value) {
-                array_btn_save.push(value.id_pedido);
-                obj_pedido(value);
+                t.row.add( [
+                    value.cantidad_surtir,
+                    value.unidad,
+                    value.articulo,
+                    value.destino,
+                    value.justificacion,
+                    value.autorizacion
+                ] ).draw( false );
             });
             var options = {
                 text: "Completado!",
@@ -288,6 +180,62 @@ function setPedidos(folio){
         },
         error: function (obj) {
             alert(obj.msg);
-        }
+        },
+        complete:(function(){
+            $('.custom-control-input').click(function(){
+                var id = $(this).attr('id');
+                (this.checked)?alert("ID:"+id+" Is Checked"):alert("ID:"+id+" Is Not Checked");
+            });
+        })
     });
 }
+function log_autentic(){
+     var firma = $("#mod_log_acces").data("firmax");
+     var password = $("#password").val();
+     var usuario  = $("#usuario").val();
+     var tokenid  = $("#"+firma).data("tokenid");
+     $.ajax({
+        data:{password:password,usuario:usuario,tokenid:tokenid},
+        url: 'json_aut_almacen.php',
+        type: 'POST',
+        success:(function(res){
+            if(res.result == "error_acount"){
+                $("#msj_alert").html("<span class='font-weight-semibold'>Error en los datos de la cuenta</span>").show(200);
+            }else if(res.result == "acount_denied"){
+                $("#msj_alert").html("<span class='font-weight-semibold'>¡Acceso denegado!</span>").show(200);
+            }else if(res.result == "ok"){
+                var nombrex = res.nombre+" "+res.apellidos;
+                aplica_firma(firma,nombrex,res.id_empleado);
+                cambiar_elementos(firma);
+                $("#mod_log_acces").modal("hide");
+            }
+        })
+    });
+ }
+ function firma_almacen(firmax){
+    $("#log_autentic_almacenista").trigger("reset");
+    $("#mod_log_acces").data("firmax",firmax);
+    $("#mod_log_acces").modal("show");
+ }
+ 
+ function aplica_firma(objeto,valor,id_empleado){
+    $("#"+objeto).val(valor).data("idempleado",id_empleado);
+    if(id_empleado == ""){
+       $("#"+objeto+"_check").slideUp();
+    }else{
+       $("#"+objeto+"_check").slideDown(); 
+    }
+ }
+ function cambiar_elementos(firma){
+    if(firma == "firma_almacenista"){
+        $("#btn_envia_valesalida").attr("disabled",false);
+    }else if(firma == "firma_vobo"){
+        $(".input-surtido-genera").each(function(){
+            $(this).attr("disabled",true);
+        });
+        $(".remover-item-pase").each(function(){
+            $(this).remove();
+        });
+        $(".card-pedidos-xsurtir").slideUp();
+    }
+ }
