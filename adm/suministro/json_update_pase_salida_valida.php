@@ -4,20 +4,30 @@
     $data = array();
     
     if(!empty($_POST['id_pedido'])){
-        $folio_vale      = $_POST['folio_vale'];
         $id_pedido       = $_POST['id_pedido'];
         $cod_articulo    = $_POST['cod_articulo'];
         $cantidad_surtir = $_POST['cantidad_surtir'];
-        $update_almacen  = $_POST['update_almacen'];
+        $status          = $_POST['status'];
+        $id_valesalida_pedido = $_POST['id_valesalida_pedido'];
         
-        $set_update_pedido = $suministro->set_update_salida($folio_vale, $id_pedido, $cod_articulo, $cantidad_surtir, $update_almacen);
-        if ($set_update_pedido == true){
-            $data[] = array("result" => 'exito');
-        }else{
-            $data[] = array("result" => $set_update_pedido);
+        if ($status == "si"){
+            $set_update_salida_aprobado = $suministro->set_update_salida_aprobado($id_pedido, $cod_articulo, $cantidad_surtir, $id_valesalida_pedido);
+            if($set_update_salida_aprobado){
+                $data[] = array("result" => 'exito');
+            }else{
+                $data[] = array("result" => $set_update_salida_aprobado);
+            }
+        }
+        if($status == "no"){
+            $set_update_salida_no_aprovado = $suministro ->set_update_salida_no_aprovado($id_pedido, $id_valesalida_pedido);
+            if($set_update_salida_no_aprovado){
+                $data[] = array("result" => 'exito');
+            }else{
+                $data[] = array("result" => $set_update_salida_no_aprovado);
+            }
         }
     }else{
-            $data[] = array("result" => $set_update_pedido);
+            $data[] = array("result" => $set_update_salida_no_aprovado);
     }
     
     header('Content-Type: application/json');

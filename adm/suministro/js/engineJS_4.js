@@ -122,17 +122,24 @@ function detalle_vale_salida(folio_vale){
         url: 'json_get_folio_detail.php',
         type: 'POST',
         success: function (obj) {
-           $("#folio_pase_salida").text(obj.folio_vale);
-           $("#firma_almacenista").val(obj.nombre_encargado+" "+obj.apellido_encargado);
-           $("#vale_observacion").val(obj.observacion);
-            obj.fecha_firma_encargado;
+            $("#folio_pase_salida").text(obj.folio_vale);
+            $("#firma_almacenista").val(obj.nombre_encargado+" "+obj.apellido_encargado);
+            $("#firma_vobo").val(obj.nombre_vobo+" "+obj.apellido_vobo).data("idempleado",obj.visto_bueno);
+            $("#vale_observacion").val(obj.observacion);
+            if(obj.status_vale == '1'){
+                $("#btn_envia_guarda_valesalida").attr("disabled",true);
+            }else if(obj.status_vale == '0'){
+                $("#btn_envia_guarda_valesalida").attr("disabled",false);
+            }
+            if(obj.visto_bueno != ''){
+                $("#id_firma_vobo").attr("disabled",true);
+            }else{
+                $("#id_firma_vobo").attr("disabled",false);
+            }
         },
         error: function (obj) {
             alert(obj.msg);
-        },
-        complete:(function(){
-            
-        })
+        }
     });
 }
 function setPedidos(folio){
@@ -180,13 +187,7 @@ function setPedidos(folio){
         },
         error: function (obj) {
             alert(obj.msg);
-        },
-        complete:(function(){
-            $('.custom-control-input').click(function(){
-                var id = $(this).attr('id');
-                (this.checked)?alert("ID:"+id+" Is Checked"):alert("ID:"+id+" Is Not Checked");
-            });
-        })
+        }
     });
 }
 function log_autentic(){
@@ -239,3 +240,75 @@ function log_autentic(){
         $(".card-pedidos-xsurtir").slideUp();
     }
  }
+ function guarda_cambios(){
+    var aut = $("#firma_vobo").data("idempleado");
+    var td = $('#dt_for_vobo').DataTable();
+    
+    var notice = new PNotify();
+    if (aut != ""){
+        $(".custom-control-input").each(function(){
+           var id_pedido = $(this).data("idpedido");
+           var cod_articulo = $(this).data("codarticulo");
+           var cantidad_surtir = $(this).data("cantidadsurtir");
+           var id_valesalida_pedido = $(this).attr("id");
+           var status = (this.checked) ? "si" : "no";
+           $.ajax({
+               data:{id_pedido:id_pedido,cod_articulo:cod_articulo,cantidad_surtir:cantidad_surtir,id_valesalida_pedido:id_valesalida_pedido,status:status},
+               url: 'json_update_pase_salida_valida.php',
+               type: 'POST',
+               beforeSend: function (xhr) {
+                    td.clear().draw();
+                    var options = {
+                        text: "Recopilando información...",
+                        addclass: 'bg-primary border-primary',
+                        type: 'info',
+                        icon: 'icon-spinner4 spinner',
+                        hide: false
+                    };
+                    notice.update(options);
+                },
+               success:(function(res){
+                   if(res.result == "exito"){
+                        var options = {
+                            text: "Enviado con exito!",
+                            addclass: 'bg-success border-success',
+                            type: 'info',
+                            icon: 'icon-checkmark4',
+                            delay: 1000,
+                            hide: true,
+                            buttons: {
+                                closer: true,
+                                sticker: false
+                            }
+                        };
+                        notice.update(options);
+                   }else{
+                       var options = {
+                        text: "Ocurrio un error al procesar la información",
+                        addclass: 'bg-danger border-danger',
+                        type: 'info',
+                        icon: 'icon-close2',
+                        delay: 1000,
+                        hide: true
+                    };
+                    notice.update(options);
+                   }
+               }),
+               complete: (function () {
+                    $("#btn_envia_guarda_valesalida").attr("disabled",true);
+               })
+           });
+        });
+    }else{
+        var options = {
+            text: "Accion no autorizada",
+            addclass: 'bg-danger border-danger',
+            type: 'info',
+            icon: 'icon-close2',
+            delay: 1000,
+            hide: true
+        };
+        notice.update(options);
+    }
+ }
+

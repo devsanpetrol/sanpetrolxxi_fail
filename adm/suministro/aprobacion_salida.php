@@ -184,14 +184,14 @@
                         <div class="row w-100">
                             <div class="col-sm-3 form-group">
                                 <div class="form-group-feedback form-group-feedback-right">
-                                    <input type="text" class="form-control form-control-sm font-weight-semibold text-pink text-center" readonly id="firma_almacenista">
+                                    <input type="text" class="form-control form-control-sm font-weight-semibold text-pink text-center" readonly id="firma_almacenista" data-idempleado="">
                                     <div class="d-block form-text text-center">
                                         <span class="badge">Encargado Almacen</span>
                                         <i class="icon-checkmark-circle text-success" id="firma_almacenista_check"></i>
                                     </div>
                                     <div class="form-control-feedback">
-                                        <button type="button" class="btn alpha-primary text-primary-800 btn-icon ml-2 legitRipple btn-sm">
-                                            <i class="icon-pencil3 text-muted"></i>
+                                        <button type="button" class="btn alpha-primary text-primary-800 btn-icon ml-2 legitRipple btn-sm" disabled>
+                                            <i class="icon-pencil3 text-blue-800"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -204,7 +204,7 @@
                                         <i class="icon-checkmark-circle text-success" id="firma_vobo_check" style="display: none;"></i>
                                     </div>
                                     <div class="form-control-feedback">
-                                        <button type="button" class="btn alpha-primary text-primary-800 btn-icon ml-2 legitRipple btn-sm" onclick="firma_almacen('firma_vobo')">
+                                        <button type="button" class="btn alpha-primary text-primary-800 btn-icon ml-2 legitRipple btn-sm" id="id_firma_vobo" onclick="firma_almacen('firma_vobo')">
                                             <i class="icon-pencil3 text-blue-800"></i>
                                         </button>
                                     </div>
@@ -219,7 +219,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-2 form-group text-right">
-                                <button type="button" class="btn btn-success btn-sm" data-aprobado="" id="btn_envia_valesalida" onclick="insert_vale_salida()" disabled><i class="icon-clipboard5 mr-2"></i> Enviar</button>
+                                <button type="button" class="btn btn-success btn-sm" data-aprobado="" id="btn_envia_guarda_valesalida" onclick="guarda_cambios()">Enviar</button>
                             </div>
                             </div>
                     </div>
